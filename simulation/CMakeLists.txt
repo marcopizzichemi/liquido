@@ -45,10 +45,20 @@ add_executable(ofos ofos.cc ${sources} ${headers})
 
 ### including ROOT libraries
 EXECUTE_PROCESS(COMMAND root-config --libs OUTPUT_VARIABLE ROOT_LD_FLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
-set(CMAKE_EXE_LINKER_FLAGS ${ROOT_LD_FLAGS})
+#set(CMAKE_EXE_LINKER_FLAGS ${ROOT_LD_FLAGS})
+
 
 ### standard G4
 target_link_libraries(ofos ${Geant4_LIBRARIES})
+
+target_link_libraries(ofos ${ROOT_LD_FLAGS})
+
+### suppress warnings
+if(MSVC)
+    ### need to find proper option
+else()
+    target_compile_options(ofos PRIVATE -w)
+endif()
 
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we
