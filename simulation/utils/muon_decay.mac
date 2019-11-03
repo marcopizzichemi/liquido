@@ -1,0 +1,40 @@
+/run/initialize
+/gps/particle mu+
+/gps/ene/mono 100 MeV
+/OFOS/ls/density 0.9
+/OFOS/ls/loading_fraction 1e-09
+
+/random/setSeeds 2355467 2355467
+
+
+/gps/direction 1 0 0    
+/gps/pos/type Point
+/gps/pos/centre -50.0 0.0 0.0 cm
+/gps/ene/type Mono
+
+/OFOS/ls/scattering 0.5 cm
+/OFOS/ls/absorption 5 m
+/OFOS/ls/birks 1e-6 
+/OFOS/ls/loading_material Te
+# number of photons per MeV
+/OFOS/ls/lightyield 400
+
+/OFOS/geom/num_ru_x 200
+/OFOS/geom/num_ru_y 200
+/OFOS/geom/num_ru_z 20
+
+/OFOS/geom/ru_xy_pitch 1.0 cm
+/OFOS/geom/ru_xy_size  0.2 cm
+/OFOS/geom/ru_xy_geom SingleFiber
+
+/OFOS/geom/ru_z_geom SingleFiber
+/OFOS/geom/ru_z_pitch 10.0 cm
+/OFOS/geom/ru_z_size  0.2 cm
+
+/OFOS/geom/fiber_radius 0.25 mm
+/OFOS/geom/out_cladding_frac 0.03
+/OFOS/geom/inn_cladding_frac 0.03
+
+/OFOS/detector/build
+
+/run/beamOn 50
