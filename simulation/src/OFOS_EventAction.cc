@@ -152,13 +152,13 @@ OFOS_EventAction::process_hit_collections ( const G4Event* evt )
 
     OFOS_OPHit *a_hit;
 
-    for (int iC = 0; iC < n_collections; ++iC )
+    for (auto & iC : collection_container)
     {
-        int n_hits = collection_container[iC]->entries();
+        int n_hits = iC->entries();
 
         for(int iH=0; iH<n_hits; ++ iH)
         {
-            a_hit = (*(collection_container[iC]))[iH];
+            a_hit = (*iC)[iH];
             global_ntuples_ptr->fill_hit( a_hit );
 
         }

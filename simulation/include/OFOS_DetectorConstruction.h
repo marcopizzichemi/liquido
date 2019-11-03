@@ -57,8 +57,8 @@ class OFOS_DetectorConstruction : public G4VUserDetectorConstruction
     void deploy_ls_properties();
 
     /// setters
-    void set_vert_ru_geometry ( G4String value );
-    void set_hori_ru_geometry ( G4String value );
+    void set_vert_ru_geometry ( const G4String& value );
+    void set_hori_ru_geometry ( const G4String& value );
     void set_number_ru_x      ( G4int    value ) { number_ru_x_      = value; }
     void set_number_ru_y      ( G4int    value ) { number_ru_y_      = value; }
     void set_number_ru_z      ( G4int    value ) { number_ru_z_      = value; }
@@ -73,7 +73,7 @@ class OFOS_DetectorConstruction : public G4VUserDetectorConstruction
 
     void update_geom();
 
-    inline G4Material* get_ls_material() { return (logic_ls_ ? logic_ls_->GetMaterial() : 0);}
+    inline G4Material* get_ls_material() { return (logic_ls_ ? logic_ls_->GetMaterial() : nullptr);}
 
 
   private:

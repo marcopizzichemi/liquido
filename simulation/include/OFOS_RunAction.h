@@ -35,7 +35,7 @@ private:
     OFOS_DetectorConstruction *detector_;
   
   public:
-    OFOS_RunAction( OFOS_DetectorConstruction *det );
+    explicit OFOS_RunAction( OFOS_DetectorConstruction *det );
     virtual ~OFOS_RunAction();
 
     virtual void BeginOfRunAction(const G4Run* run);
@@ -43,7 +43,7 @@ private:
 //
     void InitTree();
     void SetOutputFileName(G4String val){ out_filename=val;}
-    std::string get_current_time();
+    static std::string get_current_time();
     void ComputeElectronCriticalEnergy();
 
     TFile *output_hit_file_;

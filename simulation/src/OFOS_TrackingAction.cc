@@ -28,7 +28,7 @@ void OFOS_TrackingAction::PostUserTrackingAction(const G4Track* track)
 
         /// if the gamma is a primary particle, asking for CreatorProcess
         /// will result in a seg fault
-        if( track->GetCreatorProcess() != NULL )
+        if( track->GetCreatorProcess() != nullptr )
         {
             proc_type     = track->GetCreatorProcess()->GetProcessType();
             proc_subtype  = track->GetCreatorProcess()->GetProcessSubType(); 

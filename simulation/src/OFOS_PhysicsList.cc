@@ -302,25 +302,25 @@ void OFOS_PhysicsList::ConstructOp()
     
     if(OFOS_Verbosity::level>1) G4cout << "OFOS_PhysicsList::ConstructOp()" << G4endl;
     
-    G4Scintillation* theScintProcess = new G4Scintillation("Scintillation");
+    auto* theScintProcess = new G4Scintillation("Scintillation");
                      theScintProcess->SetVerboseLevel(0);
                      theScintProcess -> SetTrackSecondariesFirst(true);
                      /// meant to have a particle-dependent light yield 
                      theScintProcess -> SetScintillationYieldFactor(1.);
 
 
-    G4Cerenkov*     theCerenkovProcess = new G4Cerenkov("Cerenkov");
+    auto*     theCerenkovProcess = new G4Cerenkov("Cerenkov");
                     theCerenkovProcess->SetTrackSecondariesFirst(true);
                     /// affect the step definition, not the cherenkov yield
                     theCerenkovProcess->SetMaxNumPhotonsPerStep(30);
                     theCerenkovProcess->SetMaxBetaChangePerStep(10.0);
 
 
-    G4OpRayleigh*        theRayleighScatteringProcess = new G4OpRayleigh();
-    G4OpAbsorption*      theAbsorptionProcess         = new G4OpAbsorption();
-    G4OpBoundaryProcess* theBoundaryProcess           = new G4OpBoundaryProcess();
-    G4OpWLS*             theReemissionProcess         = new G4OpWLS();
-    G4OpMieHG*           theMieHGScatteringProcess    = new G4OpMieHG();
+    auto*        theRayleighScatteringProcess = new G4OpRayleigh();
+    auto*      theAbsorptionProcess         = new G4OpAbsorption();
+    auto* theBoundaryProcess           = new G4OpBoundaryProcess();
+    auto*             theReemissionProcess         = new G4OpWLS();
+    auto*           theMieHGScatteringProcess    = new G4OpMieHG();
     
     
     //theBoundaryProcess->DumpPhysicsTable();
@@ -398,7 +398,7 @@ void OFOS_PhysicsList::ConstructOp()
 #include "G4HadronElasticPhysics.hh"
 void OFOS_PhysicsList::ConstructHadEl() {
     G4cout << "OFOS_PhysicsList:: Hadronic Elastic Scattering Active" << G4endl;
-    G4HadronElasticPhysics* hElPhysicsList = new G4HadronElasticPhysics(1);//verbose
+    auto* hElPhysicsList = new G4HadronElasticPhysics(1);//verbose
     hElPhysicsList->SetVerboseLevel(0);
     hElPhysicsList->ConstructProcess();
     G4cout << "OFOS_PhysicsList:: Hadronic Elastic Scattering :: Done" << G4endl;
@@ -411,7 +411,7 @@ void OFOS_PhysicsList::ConstructHadEl() {
 #include "G4HadronPhysicsQGSP_BIC_HP.hh"
 void OFOS_PhysicsList::ConstructHad_QSGP_BIC_HP() {
     G4cout << "Hadronic Physics Active: QSGP_BIC_HP model" << G4endl;
-    G4HadronPhysicsQGSP_BIC_HP *hadPhysicsList = new G4HadronPhysicsQGSP_BIC_HP;
+    auto *hadPhysicsList = new G4HadronPhysicsQGSP_BIC_HP;
     hadPhysicsList->SetVerboseLevel(0);
     hadPhysicsList->ConstructProcess();
     G4cout << "Hadronic Physics Active: QSGP_BIC_HP model :: Done" << G4endl;
@@ -424,7 +424,7 @@ void OFOS_PhysicsList::ConstructHad_QSGP_BIC_HP() {
 void OFOS_PhysicsList::ConstructDecay() {
     G4cout << "PhysicsList: decays "<<G4endl;
     // Add Decay Process
-    G4Decay* theDecayProcess = new G4Decay();
+    auto* theDecayProcess = new G4Decay();
 
     auto theParticleIterator=GetParticleIterator();
     theParticleIterator->reset();

@@ -18,7 +18,7 @@ class G4UIcmdWithAString;
 class OFOS_DetectorMessenger: public G4UImessenger
 {
   public:
-    OFOS_DetectorMessenger( OFOS_DetectorConstruction *det );
+    explicit OFOS_DetectorMessenger( OFOS_DetectorConstruction *det );
     virtual ~OFOS_DetectorMessenger();
     
     virtual void SetNewValue(G4UIcommand*, G4String);

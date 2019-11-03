@@ -146,17 +146,18 @@ void OFOS_SteppingAction::UserSteppingAction(const G4Step *theStep) {
 
         switch (proc_subtype) {
             case G4EmProcessSubType::fScintillation : {
-                G4Scintillation *proc1 = dynamic_cast<G4Scintillation *>((*procPost)[iProc] );
+                auto *proc1 = dynamic_cast<G4Scintillation *>((*procPost)[iProc] );
                 n_scin_phot += proc1->GetNumPhotons();
                 global_ntuples_ptr->add_scint_phot(proc1->GetNumPhotons());
                 break;
             }
             case G4EmProcessSubType::fCerenkov : {
-                G4Cerenkov *proc1 = dynamic_cast<G4Cerenkov *>((*procPost)[iProc]);
+                auto *proc1 = dynamic_cast<G4Cerenkov *>((*procPost)[iProc]);
                 n_cher_phot += proc1->GetNumPhotons();
                 global_ntuples_ptr->add_chere_phot(proc1->GetNumPhotons());
                 break;
             }
+            default: break;
         }
     }
 
@@ -374,7 +375,7 @@ void OFOS_SteppingAction::UserSteppingAction(const G4Step *theStep) {
                 /// i.e. thisSD->get_sd_type()), and be sent directly to OutputNtuples
                 /// through global_ntuples_ptr->fill_hit(). In this case a loop
                 /// over the hit collection could be avoided at each end of event
-                dynamic_cast<OFOS_OpticalPhotonSD *>(thisSD)->process_hit(theStep, NULL);
+                dynamic_cast<OFOS_OpticalPhotonSD *>(thisSD)->process_hit(theStep, nullptr);
                 theTrack->SetTrackStatus(fStopAndKill);
 
                 if (OFOS_Verbosity::level > 3)
@@ -432,6 +433,7 @@ void OFOS_SteppingAction::UserSteppingAction(const G4Step *theStep) {
             }
             break;
         }
+        default: break;
     }
 
     /// formating debug output

@@ -13,7 +13,7 @@
 class OFOS_ActionInitialization : public G4VUserActionInitialization
 {
   public:
-    OFOS_ActionInitialization( OFOS_DetectorConstruction* det );
+    explicit OFOS_ActionInitialization( OFOS_DetectorConstruction* det );
     virtual ~OFOS_ActionInitialization();
 
     virtual void BuildForMaster() const;

@@ -34,7 +34,7 @@ public:
 private:
  
     G4int process_hit_collections ( const G4Event* evt );
-    void fetch_event_info( const G4Event* evt );
+    static void fetch_event_info( const G4Event* evt );
 
 };
 

@@ -45,29 +45,29 @@
  *
  *   Vertical Readout Units:
  *   The readout takes place on the XY plane
- *   Tehy are used for the main topology on the horizontal plane
+ *   They are used for the main topology on the horizontal plane
  *
  ********************/
 
-G4ThreadLocal G4GlobalMagFieldMessenger* OFOS_DetectorConstruction::fMagFieldMessenger = 0;
+G4ThreadLocal G4GlobalMagFieldMessenger* OFOS_DetectorConstruction::fMagFieldMessenger = nullptr;
  
 OFOS_DetectorConstruction::OFOS_DetectorConstruction() :G4VUserDetectorConstruction(),
-                                                        logic_vert_ru_sipmt_(NULL), 
-                                                        logic_hori_ru_sipmt_(NULL), 
-                                                        logic_vert_fiber_(NULL), 
-                                                        logic_hori_fiber_(NULL), 
-                                                        logic_vessel_(NULL),
+                                                        logic_vert_ru_sipmt_(nullptr),
+                                                        logic_hori_ru_sipmt_(nullptr),
+                                                        logic_vert_fiber_(nullptr),
+                                                        logic_hori_fiber_(nullptr),
+                                                        logic_vessel_(nullptr),
                                                         fCheckOverlaps(false),
-                                                        logic_ls_(0),
-                                                        ls_mpt(0),
-                                                        ls(0),
-                                                        air(0),
+                                                        logic_ls_(nullptr),
+                                                        ls_mpt(nullptr),
+                                                        ls(nullptr),
+                                                        air(nullptr),
                                                         is_geom_built(false),
-                                                        vert_sipmt_SD_(0),
-                                                        vert_fiber_SD_(0),
-                                                        hori_sipmt_SD_(0),
-                                                        hori_fiber_SD_(0),
-                                                        vessel_SD_(0)
+                                                        vert_sipmt_SD_(nullptr),
+                                                        vert_fiber_SD_(nullptr),
+                                                        hori_sipmt_SD_(nullptr),
+                                                        hori_fiber_SD_(nullptr),
+                                                        vessel_SD_(nullptr)
                                                     //  optical_photon_sd_(0)
 {
     OFOS_OutputLog::log_cache << "OFOS_DetectorConstruction::OFOS_DetectorConstruction()" << G4endl;
@@ -156,18 +156,18 @@ void OFOS_DetectorConstruction::define_materials()
 
 
 
-    G4Element *C  = new G4Element("Carbon", "C" , 6., 12.01*g/mole); 
-    G4Element *H  = new G4Element("Hydrogen", "H" , 1., 1.01*g/mole);
-    G4Element *O  = new G4Element("Oxygen", "O", 8., 16.00*g/mole); 
-    G4Element *N  = new G4Element("Nitrogen", "N", 7., 14.01*g/mole);
-    G4Element *Si = new G4Element("Silicon", "Si", 14., 28.09*g/mole);
-    G4Element *Al = new G4Element("Aluminium", "Al", 13., 26.98*g/mole);
-    G4Element *S  = new G4Element("Sulfur", "S", 16., 32.066*g/mole);
+    auto *C  = new G4Element("Carbon", "C" , 6., 12.01*g/mole);
+    auto *H  = new G4Element("Hydrogen", "H" , 1., 1.01*g/mole);
+    auto *O  = new G4Element("Oxygen", "O", 8., 16.00*g/mole);
+    auto *N  = new G4Element("Nitrogen", "N", 7., 14.01*g/mole);
+    auto *Si = new G4Element("Silicon", "Si", 14., 28.09*g/mole);
+    auto *Al = new G4Element("Aluminium", "Al", 13., 26.98*g/mole);
+    auto *S  = new G4Element("Sulfur", "S", 16., 32.066*g/mole);
 //  G4Element *Pb = new G4Element("Lead", "Pb", 82., 207.2*g/mole);
     
 
 
-    /* DUMMY FIBER OPTCAL PROPERTIES */
+    /* DUMMY FIBER OPTICAL PROPERTIES */
     G4double energy_10[10] = 
     { 1.0 * eV,
       2.0 * eV,
@@ -252,7 +252,7 @@ void OFOS_DetectorConstruction::define_materials()
       1.0E-9 * mm, 
       1.0E-9 * mm, 
       1.0E-9 * mm };
-    /* end of DUMMYFIBER OPTCAL PROPERTIES */
+    /* end of DUMMYFIBER OPTICAL PROPERTIES */
 
 
 
@@ -284,7 +284,7 @@ void OFOS_DetectorConstruction::define_materials()
     black_acrylic->AddElement(H, 0.08055);
     black_acrylic->AddElement(O, 0.31961);
 
-    G4MaterialPropertiesTable* black_mpt = new G4MaterialPropertiesTable();
+    auto* black_mpt = new G4MaterialPropertiesTable();
 
 
 
@@ -292,7 +292,7 @@ void OFOS_DetectorConstruction::define_materials()
     polystyrene->AddElement(C, 0.5);
     polystyrene->AddElement(H, 0.5);
 
-    G4MaterialPropertiesTable* polystyrene_mpt = new G4MaterialPropertiesTable();
+    auto* polystyrene_mpt = new G4MaterialPropertiesTable();
     polystyrene_mpt->AddProperty( "RINDEX",    energy_10, core_n, 10 );
     polystyrene_mpt->AddProperty( "ABSLENGTH", energy_10, core_att_len, 10 );
     polystyrene->SetMaterialPropertiesTable(polystyrene_mpt);
@@ -303,7 +303,7 @@ void OFOS_DetectorConstruction::define_materials()
     polymethylmethacrylate->AddElement(H, 0.532710);
     polymethylmethacrylate->AddElement(O, 0.130841);
 
-    G4MaterialPropertiesTable* polymethylmethacrylate_mpt = new G4MaterialPropertiesTable();
+    auto* polymethylmethacrylate_mpt = new G4MaterialPropertiesTable();
     polymethylmethacrylate_mpt->AddProperty( "RINDEX",    energy_10, inn_clad_n, 10 );
     polymethylmethacrylate_mpt->AddProperty( "ABSLENGTH", energy_10, fib_att_len, 10 );
     polymethylmethacrylate->SetMaterialPropertiesTable(polymethylmethacrylate_mpt);
@@ -313,7 +313,7 @@ void OFOS_DetectorConstruction::define_materials()
     out_cladding_mat->AddElement(H, 0.532710);  /// JUST A PLACEHOLDER
     out_cladding_mat->AddElement(O, 0.130841);
 
-    G4MaterialPropertiesTable* out_cladding_mpt = new G4MaterialPropertiesTable();
+    auto* out_cladding_mpt = new G4MaterialPropertiesTable();
     out_cladding_mpt->AddProperty( "RINDEX",    energy_10, out_clad_n, 10 );
     out_cladding_mpt->AddProperty( "ABSLENGTH", energy_10, fib_att_len, 10 );
     out_cladding_mat->SetMaterialPropertiesTable(out_cladding_mpt);
@@ -477,7 +477,7 @@ OFOS_DetectorConstruction::make_cocktail( double density, double loading_fractio
              ls_name += "_at_";
              ls_name += G4UIcommand::ConvertToString(loading_fraction);
 
-    G4Material* a_ls = new G4Material(ls_name, density*g/cm3, 2);
+    auto* a_ls = new G4Material(ls_name, density*g/cm3, 2);
                 a_ls->AddMaterial(lab, 1./(1.+loading_fraction));
                 a_ls->AddMaterial(a_isotope, loading_fraction/(1.+loading_fraction));
 
@@ -535,7 +535,7 @@ OFOS_DetectorConstruction::deploy_ls_properties()
 
  // if(ls_mpt) delete ls_mpt; /// if deleted causes seg fault -> G4 ownership?
 
-    G4MaterialPropertiesTable *a_ls_mpt = new G4MaterialPropertiesTable();
+    auto *a_ls_mpt = new G4MaterialPropertiesTable();
 
     a_ls_mpt->AddProperty("RINDEX",                  my_ls_properties->get_energy(), my_ls_properties->get_ref_index(),     my_ls_properties->get_n_data() );
     a_ls_mpt->AddProperty("ABSLENGTH",               my_ls_properties->get_energy(), my_ls_properties->get_absorption(),    my_ls_properties->get_n_data() );
@@ -634,7 +634,7 @@ OFOS_DetectorConstruction::update_geom()
     G4LogicalVolumeStore *pLVStore = G4LogicalVolumeStore::GetInstance();
     G4int nLV = pLVStore->size();
     G4int iLV = 0;
-    G4LogicalVolume *pLV = 0;
+    G4LogicalVolume *pLV = nullptr;
 
     for(iLV=0; iLV<nLV && OFOS_Verbosity::level>1; ++iLV)
     {
@@ -726,97 +726,97 @@ OFOS_DetectorConstruction::build_geom()
    
    
    
-    G4Box             *world_s = new G4Box( "World",0.5 * world_x_size, 0.5 * world_y_size, 0.5 * world_z_size);
-    G4LogicalVolume   *world_l = new G4LogicalVolume( world_s, air, "World");
-    G4VPhysicalVolume *world_p = new G4PVPlacement( 0,                     //no rotation
+    auto             *world_s = new G4Box( "World",0.5 * world_x_size, 0.5 * world_y_size, 0.5 * world_z_size);
+    auto   *world_l = new G4LogicalVolume( world_s, air, "World");
+    G4VPhysicalVolume *world_p = new G4PVPlacement( nullptr,                     //no rotation
      	                                            G4ThreeVector(),       //at (0,0,0)
      	                                            world_l,          //its logical volume
      	                                            "World",               //its name
-     	                                            0,                     //its mother  volume
+     	                                            nullptr,                     //its mother  volume
      	                                            false,                 //no boolean operation
      	                                            0,                     //copy number
      	                                            fCheckOverlaps);       //overlaps checking
    
    
     // Outer Vessel
-    G4Box             *outer_vessel_s = new G4Box("OuterVessel", 0.5 * outer_vessel_x_size , 0.5 * outer_vessel_y_size , 0.5 * outer_vessel_z_size );
-    G4LogicalVolume   *outer_vessel_l = new G4LogicalVolume(outer_vessel_s,black_acrylic ,"OuterVessel");
-    G4VPhysicalVolume *outer_vessel_p = new G4PVPlacement(0, G4ThreeVector(), outer_vessel_l, "OuterVessel", world_l, false, 0, fCheckOverlaps);
+    auto             *outer_vessel_s = new G4Box("OuterVessel", 0.5 * outer_vessel_x_size , 0.5 * outer_vessel_y_size , 0.5 * outer_vessel_z_size );
+    auto   *outer_vessel_l = new G4LogicalVolume(outer_vessel_s,black_acrylic ,"OuterVessel");
+    G4VPhysicalVolume *outer_vessel_p = new G4PVPlacement(nullptr, G4ThreeVector(), outer_vessel_l, "OuterVessel", world_l, false, 0, fCheckOverlaps);
     
     
     /// Buffer
-    G4Box             *buffer_s = new G4Box("Buffer", 0.5 * (outer_vessel_x_size - 2. * outer_vessel_thickness_ ),
+    auto             *buffer_s = new G4Box("Buffer", 0.5 * (outer_vessel_x_size - 2. * outer_vessel_thickness_ ),
                                                            0.5 * (outer_vessel_y_size - 2. * outer_vessel_thickness_ ),
                                                            0.5 * (outer_vessel_z_size - 2. * outer_vessel_thickness_ ));
-    G4LogicalVolume   *buffer_l = new G4LogicalVolume( buffer_s, air, "Buffer");
-    G4VPhysicalVolume *buffer_p = new G4PVPlacement( 0, G4ThreeVector(), buffer_l, "Buffer", outer_vessel_l, false, 0, fCheckOverlaps);
+    auto   *buffer_l = new G4LogicalVolume( buffer_s, air, "Buffer");
+    G4VPhysicalVolume *buffer_p = new G4PVPlacement( nullptr, G4ThreeVector(), buffer_l, "Buffer", outer_vessel_l, false, 0, fCheckOverlaps);
     
     
     // LS Vessel
-    G4Box             *ls_vessel_s = new G4Box( "LsVessel", 0.5 * ls_vessel_x_size, 0.5 * ls_vessel_y_size, 0.5 * ls_vessel_z_size );
-    G4LogicalVolume   *ls_vessel_l = new G4LogicalVolume( ls_vessel_s, black_acrylic, "LsVessel" );
-    G4VPhysicalVolume *ls_vessel_p = new G4PVPlacement(0, G4ThreeVector(), ls_vessel_l, "LsVessel", buffer_l, false, 0, fCheckOverlaps);
+    auto             *ls_vessel_s = new G4Box( "LsVessel", 0.5 * ls_vessel_x_size, 0.5 * ls_vessel_y_size, 0.5 * ls_vessel_z_size );
+    auto   *ls_vessel_l = new G4LogicalVolume( ls_vessel_s, black_acrylic, "LsVessel" );
+    G4VPhysicalVolume *ls_vessel_p = new G4PVPlacement(nullptr, G4ThreeVector(), ls_vessel_l, "LsVessel", buffer_l, false, 0, fCheckOverlaps);
     
     
     // LS
-    G4Box             *ls_s   = new G4Box("LS", 0.5 * ls_x_size, 0.5 * ls_y_size, 0.5 * ls_z_size );
-    G4LogicalVolume   *ls_l = new G4LogicalVolume(ls_s, ls ,"LS");
+    auto             *ls_s   = new G4Box("LS", 0.5 * ls_x_size, 0.5 * ls_y_size, 0.5 * ls_z_size );
+    auto   *ls_l = new G4LogicalVolume(ls_s, ls ,"LS");
     logic_ls_ = ls_l;
-    G4VPhysicalVolume *ls_p    = new G4PVPlacement(0,G4ThreeVector(), ls_l, "LS", ls_vessel_l, false, 0, fCheckOverlaps);
+    G4VPhysicalVolume *ls_p    = new G4PVPlacement(nullptr,G4ThreeVector(), ls_l, "LS", ls_vessel_l, false, 0, fCheckOverlaps);
     
     
     /// 2beta source 
-    G4Box             *wall_s = new G4Box("Wall", 0.5 * beta_emitter_wall_thickness_, 0.5 * ls_y_size, 0.5 * ls_z_size );
-    G4LogicalVolume   *wall_l = new G4LogicalVolume(wall_s, black_acrylic ,"Wall");
+    auto             *wall_s = new G4Box("Wall", 0.5 * beta_emitter_wall_thickness_, 0.5 * ls_y_size, 0.5 * ls_z_size );
+    auto   *wall_l = new G4LogicalVolume(wall_s, black_acrylic ,"Wall");
     if(beta_emitter_wall_thickness_ > 1e-6)
     {
-        G4VPhysicalVolume *wall_p = new G4PVPlacement(0,G4ThreeVector(), wall_l, "Wall", ls_l, false, 0, true);
+        G4VPhysicalVolume *wall_p = new G4PVPlacement(nullptr,G4ThreeVector(), wall_l, "Wall", ls_l, false, 0, true);
         OFOS_OutputLog::log_cache << "OFOS_DetectorConstruction::build_geom() :: 2beta source foil deployed" << G4endl;
     }
    
    
     /// Horizontal Readout Unit
-    G4Tubs             *hori_ru_s = new G4Tubs("hori_ru_s", 0, hori_ru_radius, 0.5 * hori_fiber_env_length, 0, twopi );
-    G4LogicalVolume    *hori_ru_l = new G4LogicalVolume(hori_ru_s, ls , "z_readout_unit");
+    auto             *hori_ru_s = new G4Tubs("hori_ru_s", 0, hori_ru_radius, 0.5 * hori_fiber_env_length, 0, twopi );
+    auto    *hori_ru_l = new G4LogicalVolume(hori_ru_s, ls , "z_readout_unit");
    
     // Horizontal Fiber Envelope
-    G4Tubs          *hori_fiber_env_s = new G4Tubs("hori_fiber_env_s", 0., fiber_radius_, 0.5 * hori_fiber_env_length, 0*deg, 360*deg);
-    G4LogicalVolume *hori_fiber_env_l = new G4LogicalVolume( hori_fiber_env_s, out_cladding_mat, "Horizontal Fiber Envelope");
+    auto          *hori_fiber_env_s = new G4Tubs("hori_fiber_env_s", 0., fiber_radius_, 0.5 * hori_fiber_env_length, 0*deg, 360*deg);
+    auto *hori_fiber_env_l = new G4LogicalVolume( hori_fiber_env_s, out_cladding_mat, "Horizontal Fiber Envelope");
 
     //  Horizontal Fiber outer cladding
-    G4Tubs          *hori_fiber_outer_cladding_s   = new G4Tubs("hori_fiber_outer_cladding_s", 0. , fiber_radius_, 0.5 * hori_fiber_length, 0*deg, 360*deg);
-    G4LogicalVolume *hori_fiber_outer_cladding_l   = new G4LogicalVolume(hori_fiber_outer_cladding_s, out_cladding_mat, "Horizontal Fiber Outer Cladding");
+    auto          *hori_fiber_outer_cladding_s   = new G4Tubs("hori_fiber_outer_cladding_s", 0. , fiber_radius_, 0.5 * hori_fiber_length, 0*deg, 360*deg);
+    auto *hori_fiber_outer_cladding_l   = new G4LogicalVolume(hori_fiber_outer_cladding_s, out_cladding_mat, "Horizontal Fiber Outer Cladding");
    
     //  Horizontal Fiber inner cladding
-    G4Tubs          *hori_fiber_inner_cladding_s   = new G4Tubs("hori_fiber_inner_cladding_s", 0. , 
+    auto          *hori_fiber_inner_cladding_s   = new G4Tubs("hori_fiber_inner_cladding_s", 0. ,
                                                       (1.-outer_cladding_fractional_radius_) * fiber_radius_, 0.5 * hori_fiber_length, 0*deg, 360*deg);
-    G4LogicalVolume *hori_fiber_inner_cladding_l   = new G4LogicalVolume(hori_fiber_inner_cladding_s, polymethylmethacrylate, "Horizontal Fiber Inner Cladding");
+    auto *hori_fiber_inner_cladding_l   = new G4LogicalVolume(hori_fiber_inner_cladding_s, polymethylmethacrylate, "Horizontal Fiber Inner Cladding");
 
     // Horizontal Fiber Core
-    G4Tubs          *hori_fiber_core_s   = new G4Tubs("hori_fiber_core_s", 0.,
+    auto          *hori_fiber_core_s   = new G4Tubs("hori_fiber_core_s", 0.,
                                             (1.-outer_cladding_fractional_radius_-inner_cladding_fractional_radius_) * fiber_radius_, 
                                             0.5 * hori_fiber_length, 0*deg, 360*deg);
-    G4LogicalVolume *hori_fiber_core_l  = new G4LogicalVolume(hori_fiber_core_s,polystyrene, "Horizontal Fiber Core");
+    auto *hori_fiber_core_l  = new G4LogicalVolume(hori_fiber_core_s,polystyrene, "Horizontal Fiber Core");
 
     // SiPMT within Horizontal RU
-    G4Tubs            *hori_ru_sipmt_s = new G4Tubs("hori_ru_sipmt_s", 0., sipmt_radius , 0.5 * sipm_thickness, 0*deg, 360*deg);
-    G4LogicalVolume   *hori_ru_sipmt_l = new G4LogicalVolume(hori_ru_sipmt_s,black_acrylic, "Horizontal RU SiPMT");
+    auto            *hori_ru_sipmt_s = new G4Tubs("hori_ru_sipmt_s", 0., sipmt_radius , 0.5 * sipm_thickness, 0*deg, 360*deg);
+    auto   *hori_ru_sipmt_l = new G4LogicalVolume(hori_ru_sipmt_s,black_acrylic, "Horizontal RU SiPMT");
 
     // SiPMT Sensitive Volume within Horizontal RU
-    G4Tubs            *hori_ru_sipmt_sens_s = new G4Tubs("hori_ru_sipmt_sens_s", 0., sipmt_sens_radius , (0.5 * sipm_thickness)/2., 0*deg, 360*deg);
-    G4LogicalVolume   *hori_ru_sipmt_sens_l = new G4LogicalVolume(hori_ru_sipmt_sens_s,polystyrene, "Horizontal RU Sensitive SiPMT");
-    G4VPhysicalVolume *hori_ru_sipmt_sens_p = new G4PVPlacement(0, G4ThreeVector(0.,0.,-0.5 * sipm_thickness + (0.5 * sipm_thickness)/2. ), 
+    auto            *hori_ru_sipmt_sens_s = new G4Tubs("hori_ru_sipmt_sens_s", 0., sipmt_sens_radius , (0.5 * sipm_thickness)/2., 0*deg, 360*deg);
+    auto   *hori_ru_sipmt_sens_l = new G4LogicalVolume(hori_ru_sipmt_sens_s,polystyrene, "Horizontal RU Sensitive SiPMT");
+    G4VPhysicalVolume *hori_ru_sipmt_sens_p = new G4PVPlacement(nullptr, G4ThreeVector(0.,0.,-0.5 * sipm_thickness + (0.5 * sipm_thickness)/2. ),
                                                   hori_ru_sipmt_sens_l, "SiPMTsens", hori_ru_sipmt_l, false, 0, fCheckOverlaps);    
 
 
     /// Fill fiber envelops with actual fibers and SiPm
-    G4VPhysicalVolume* hori_fiber_outer_cladding_p = new G4PVPlacement(0, G4ThreeVector(), hori_fiber_outer_cladding_l, "OuterCladding", 
+    G4VPhysicalVolume* hori_fiber_outer_cladding_p = new G4PVPlacement(nullptr, G4ThreeVector(), hori_fiber_outer_cladding_l, "OuterCladding",
                                                       hori_fiber_env_l, false, 0, fCheckOverlaps);
-    G4VPhysicalVolume* hori_fiber_inner_cladding_p = new G4PVPlacement(0, G4ThreeVector(), hori_fiber_inner_cladding_l, "InnerCladding", 
+    G4VPhysicalVolume* hori_fiber_inner_cladding_p = new G4PVPlacement(nullptr, G4ThreeVector(), hori_fiber_inner_cladding_l, "InnerCladding",
                                                       hori_fiber_outer_cladding_l, false, 0, fCheckOverlaps);
-    G4VPhysicalVolume* hori_fiber_core_p           = new G4PVPlacement(0, G4ThreeVector(), hori_fiber_core_l, "FiberCore", 
+    G4VPhysicalVolume* hori_fiber_core_p           = new G4PVPlacement(nullptr, G4ThreeVector(), hori_fiber_core_l, "FiberCore",
                                                       hori_fiber_inner_cladding_l, false, 0, fCheckOverlaps);
-    G4VPhysicalVolume* hori_ru_sipmt_top_p         = new G4PVPlacement(0, G4ThreeVector(0.,0.,0.5 * hori_fiber_env_length - 0.5 * sipm_thickness), 
+    G4VPhysicalVolume* hori_ru_sipmt_top_p         = new G4PVPlacement(nullptr, G4ThreeVector(0.,0.,0.5 * hori_fiber_env_length - 0.5 * sipm_thickness),
                                                       hori_ru_sipmt_l, "SiPMT", hori_fiber_env_l, false, 0, fCheckOverlaps);
    
     G4RotationMatrix rot_sipmt;
@@ -862,37 +862,37 @@ OFOS_DetectorConstruction::build_geom()
 
 
     /// Fill a readout unit with fiber envelopes
-    G4VPhysicalVolume* physFiberEn1 = 0;
-    G4VPhysicalVolume* physFiberEn2 = 0;
-    G4VPhysicalVolume* physFiberEn3 = 0;
-    G4VPhysicalVolume* physFiberEn4 = 0;
+    G4VPhysicalVolume* physFiberEn1 = nullptr;
+    G4VPhysicalVolume* physFiberEn2 = nullptr;
+    G4VPhysicalVolume* physFiberEn3 = nullptr;
+    G4VPhysicalVolume* physFiberEn4 = nullptr;
     G4double r_circ = hori_ru_size_ / sqrt(3.0);
 
 
     switch( hori_ru_geometry_ )
     {
         case ReadoutUnitGeometry::SingleFiber:
-            physFiberEn1 = new G4PVPlacement( 0, G4ThreeVector(), hori_fiber_env_l ,"FiberEnv", hori_ru_l, false, 0, fCheckOverlaps); 
+            physFiberEn1 = new G4PVPlacement( nullptr, G4ThreeVector(), hori_fiber_env_l ,"FiberEnv", hori_ru_l, false, 0, fCheckOverlaps);
             break;
     
         case ReadoutUnitGeometry::Triangle:
-            physFiberEn1 = new G4PVPlacement( 0, G4ThreeVector( -0.5*hori_ru_size_, -0.5*r_circ , 0), hori_fiber_env_l ,"FiberEnv", hori_ru_l, false, 0, fCheckOverlaps); 
-            physFiberEn2 = new G4PVPlacement( 0, G4ThreeVector(  0.5*hori_ru_size_, -0.5*r_circ , 0), hori_fiber_env_l ,"FiberEnv", hori_ru_l, false, 1, fCheckOverlaps); 
-            physFiberEn3 = new G4PVPlacement( 0, G4ThreeVector(  0, r_circ , 0), hori_fiber_env_l ,"FiberEnv", hori_ru_l, false, 2, fCheckOverlaps); 
+            physFiberEn1 = new G4PVPlacement( nullptr, G4ThreeVector( -0.5*hori_ru_size_, -0.5*r_circ , 0), hori_fiber_env_l ,"FiberEnv", hori_ru_l, false, 0, fCheckOverlaps);
+            physFiberEn2 = new G4PVPlacement( nullptr, G4ThreeVector(  0.5*hori_ru_size_, -0.5*r_circ , 0), hori_fiber_env_l ,"FiberEnv", hori_ru_l, false, 1, fCheckOverlaps);
+            physFiberEn3 = new G4PVPlacement( nullptr, G4ThreeVector(  0, r_circ , 0), hori_fiber_env_l ,"FiberEnv", hori_ru_l, false, 2, fCheckOverlaps);
             break;
     
         case ReadoutUnitGeometry::Square:
-            physFiberEn1 = new G4PVPlacement( 0, G4ThreeVector(-0.5*hori_ru_size_,  0.5*hori_ru_size_, 0), hori_fiber_env_l ,"FiberEnv", hori_ru_l, false, 0, fCheckOverlaps); 
-            physFiberEn2 = new G4PVPlacement( 0, G4ThreeVector( 0.5*hori_ru_size_,  0.5*hori_ru_size_, 0), hori_fiber_env_l ,"FiberEnv", hori_ru_l, false, 1, fCheckOverlaps); 
-            physFiberEn3 = new G4PVPlacement( 0, G4ThreeVector(-0.5*hori_ru_size_, -0.5*hori_ru_size_, 0), hori_fiber_env_l ,"FiberEnv", hori_ru_l, false, 2, fCheckOverlaps); 
-            physFiberEn4 = new G4PVPlacement( 0, G4ThreeVector( 0.5*hori_ru_size_, -0.5*hori_ru_size_, 0), hori_fiber_env_l ,"FiberEnv", hori_ru_l, false, 3, fCheckOverlaps); 
+            physFiberEn1 = new G4PVPlacement( nullptr, G4ThreeVector(-0.5*hori_ru_size_,  0.5*hori_ru_size_, 0), hori_fiber_env_l ,"FiberEnv", hori_ru_l, false, 0, fCheckOverlaps);
+            physFiberEn2 = new G4PVPlacement( nullptr, G4ThreeVector( 0.5*hori_ru_size_,  0.5*hori_ru_size_, 0), hori_fiber_env_l ,"FiberEnv", hori_ru_l, false, 1, fCheckOverlaps);
+            physFiberEn3 = new G4PVPlacement( nullptr, G4ThreeVector(-0.5*hori_ru_size_, -0.5*hori_ru_size_, 0), hori_fiber_env_l ,"FiberEnv", hori_ru_l, false, 2, fCheckOverlaps);
+            physFiberEn4 = new G4PVPlacement( nullptr, G4ThreeVector( 0.5*hori_ru_size_, -0.5*hori_ru_size_, 0), hori_fiber_env_l ,"FiberEnv", hori_ru_l, false, 3, fCheckOverlaps);
             break;
     
         default:
-            physFiberEn1 = new G4PVPlacement( 0, G4ThreeVector(-0.5*hori_ru_size_,  0.5*hori_ru_size_, 0), hori_fiber_env_l ,"FiberEnv", hori_ru_l, false, 0, fCheckOverlaps); 
-            physFiberEn2 = new G4PVPlacement( 0, G4ThreeVector( 0.5*hori_ru_size_,  0.5*hori_ru_size_, 0), hori_fiber_env_l ,"FiberEnv", hori_ru_l, false, 1, fCheckOverlaps); 
-            physFiberEn3 = new G4PVPlacement( 0, G4ThreeVector(-0.5*hori_ru_size_, -0.5*hori_ru_size_, 0), hori_fiber_env_l ,"FiberEnv", hori_ru_l, false, 2, fCheckOverlaps); 
-            physFiberEn4 = new G4PVPlacement( 0, G4ThreeVector( 0.5*hori_ru_size_, -0.5*hori_ru_size_, 0), hori_fiber_env_l ,"FiberEnv", hori_ru_l, false, 3, fCheckOverlaps); 
+            physFiberEn1 = new G4PVPlacement( nullptr, G4ThreeVector(-0.5*hori_ru_size_,  0.5*hori_ru_size_, 0), hori_fiber_env_l ,"FiberEnv", hori_ru_l, false, 0, fCheckOverlaps);
+            physFiberEn2 = new G4PVPlacement( nullptr, G4ThreeVector( 0.5*hori_ru_size_,  0.5*hori_ru_size_, 0), hori_fiber_env_l ,"FiberEnv", hori_ru_l, false, 1, fCheckOverlaps);
+            physFiberEn3 = new G4PVPlacement( nullptr, G4ThreeVector(-0.5*hori_ru_size_, -0.5*hori_ru_size_, 0), hori_fiber_env_l ,"FiberEnv", hori_ru_l, false, 2, fCheckOverlaps);
+            physFiberEn4 = new G4PVPlacement( nullptr, G4ThreeVector( 0.5*hori_ru_size_, -0.5*hori_ru_size_, 0), hori_fiber_env_l ,"FiberEnv", hori_ru_l, false, 3, fCheckOverlaps);
             break;
     }
 
@@ -902,54 +902,54 @@ OFOS_DetectorConstruction::build_geom()
 
 
     /// Vertical Readout Unit
-    G4Tubs             *vert_ru_s = new G4Tubs("vert_ru_s", 0, vert_ru_radius, 0.5 * vert_fiber_env_length, 0, twopi );
-    G4LogicalVolume    *vert_ru_l = new G4LogicalVolume(vert_ru_s, ls , "readout_unit");
+    auto             *vert_ru_s = new G4Tubs("vert_ru_s", 0, vert_ru_radius, 0.5 * vert_fiber_env_length, 0, twopi );
+    auto    *vert_ru_l = new G4LogicalVolume(vert_ru_s, ls , "readout_unit");
    
     // Vertical Fiber Envelope
-    G4Tubs          *vert_fiber_env_s = new G4Tubs("vert_fiber_env_s", 0., fiber_radius_, 0.5 * vert_fiber_env_length, 0*deg, 360*deg);
-    G4LogicalVolume *vert_fiber_env_l = new G4LogicalVolume( vert_fiber_env_s, out_cladding_mat, "vert_fiber_env_l");
+    auto          *vert_fiber_env_s = new G4Tubs("vert_fiber_env_s", 0., fiber_radius_, 0.5 * vert_fiber_env_length, 0*deg, 360*deg);
+    auto *vert_fiber_env_l = new G4LogicalVolume( vert_fiber_env_s, out_cladding_mat, "vert_fiber_env_l");
    
     //  Fiber outer cladding
-    G4Tubs          *vert_fiber_outer_cladding_s   = new G4Tubs("vert_fiber_outer_cladding_s", 0. , fiber_radius_, 0.5 * vert_fiber_length, 0*deg, 360*deg);
-    G4LogicalVolume *vert_fiber_outer_cladding_l   = new G4LogicalVolume(vert_fiber_outer_cladding_s, out_cladding_mat, "OuterCladding");
+    auto          *vert_fiber_outer_cladding_s   = new G4Tubs("vert_fiber_outer_cladding_s", 0. , fiber_radius_, 0.5 * vert_fiber_length, 0*deg, 360*deg);
+    auto *vert_fiber_outer_cladding_l   = new G4LogicalVolume(vert_fiber_outer_cladding_s, out_cladding_mat, "OuterCladding");
 
     if(OFOS_Verbosity::level>1)
         OFOS_OutputLog::log_cache << "vert_fiber_outer_cladding_l :: " << vert_fiber_outer_cladding_s->GetOuterRadius() << G4endl;
    
     //  Fiber inner cladding
-    G4Tubs          *vert_fiber_inner_cladding_s   = new G4Tubs("vert_fiber_inner_cladding_s", 0. , 
+    auto          *vert_fiber_inner_cladding_s   = new G4Tubs("vert_fiber_inner_cladding_s", 0. ,
                                                        (1.-outer_cladding_fractional_radius_) * fiber_radius_, 0.5 * vert_fiber_length, 0*deg, 360*deg);
-    G4LogicalVolume *vert_fiber_inner_cladding_l   = new G4LogicalVolume(vert_fiber_inner_cladding_s, polymethylmethacrylate, "vert_fiber_inner_cladding_l");
+    auto *vert_fiber_inner_cladding_l   = new G4LogicalVolume(vert_fiber_inner_cladding_s, polymethylmethacrylate, "vert_fiber_inner_cladding_l");
     if(OFOS_Verbosity::level>1)
         OFOS_OutputLog::log_cache << "vert_fiber_inner_cladding_l :: " << vert_fiber_inner_cladding_s->GetOuterRadius()  << G4endl;
    
 
     //  Fiber Core
-    G4Tubs          *vert_fiber_core_s   = new G4Tubs("vert_fiber_core_s", 0.,
+    auto          *vert_fiber_core_s   = new G4Tubs("vert_fiber_core_s", 0.,
                                              (1.-outer_cladding_fractional_radius_-inner_cladding_fractional_radius_) * fiber_radius_, 
                                              0.5 * vert_fiber_length, 0*deg, 360*deg);
-    G4LogicalVolume *vert_fiber_core_l  = new G4LogicalVolume(vert_fiber_core_s,polystyrene, "vert_fiber_core_l");
+    auto *vert_fiber_core_l  = new G4LogicalVolume(vert_fiber_core_s,polystyrene, "vert_fiber_core_l");
     if(OFOS_Verbosity::level>1)
         OFOS_OutputLog::log_cache << "vert_fiber_core_l :: " << vert_fiber_core_s->GetOuterRadius() << G4endl;
    
     // SiPMT
-    G4Tubs            *vert_ru_sipmt_s = new G4Tubs("vert_ru_sipmt_s", 0., sipmt_radius , 0.5 * sipm_thickness, 0*deg, 360*deg);
-    G4LogicalVolume   *vert_ru_sipmt_l = new G4LogicalVolume(vert_ru_sipmt_s,black_acrylic, "SiPMT");
+    auto            *vert_ru_sipmt_s = new G4Tubs("vert_ru_sipmt_s", 0., sipmt_radius , 0.5 * sipm_thickness, 0*deg, 360*deg);
+    auto   *vert_ru_sipmt_l = new G4LogicalVolume(vert_ru_sipmt_s,black_acrylic, "SiPMT");
     
     // SiPMT Sensitive Volume
-    G4Tubs            *vert_ru_sipmt_sens_s = new G4Tubs("vert_ru_sipmt_sens_s", 0., sipmt_sens_radius , (0.5 * sipm_thickness)/2., 0*deg, 360*deg);
-    G4LogicalVolume   *vert_ru_sipmt_sens_l = new G4LogicalVolume(vert_ru_sipmt_sens_s,polystyrene, "SiPMTsens");
-    G4VPhysicalVolume *vert_ru_sipmt_sens_p = new G4PVPlacement(0, G4ThreeVector(0.,0.,-0.5 * sipm_thickness + (0.5 * sipm_thickness)/2. ), 
+    auto            *vert_ru_sipmt_sens_s = new G4Tubs("vert_ru_sipmt_sens_s", 0., sipmt_sens_radius , (0.5 * sipm_thickness)/2., 0*deg, 360*deg);
+    auto   *vert_ru_sipmt_sens_l = new G4LogicalVolume(vert_ru_sipmt_sens_s,polystyrene, "SiPMTsens");
+    G4VPhysicalVolume *vert_ru_sipmt_sens_p = new G4PVPlacement(nullptr, G4ThreeVector(0.,0.,-0.5 * sipm_thickness + (0.5 * sipm_thickness)/2. ),
                                              vert_ru_sipmt_sens_l, "SiPMTsens", vert_ru_sipmt_l, false, 0, fCheckOverlaps);    
     
     /// Fill fiber envelops with actual fibers and SiPm
-    G4VPhysicalVolume* vert_fiber_outer_cladding_p = new G4PVPlacement(0, G4ThreeVector(), vert_fiber_outer_cladding_l, "OuterCladding", 
+    G4VPhysicalVolume* vert_fiber_outer_cladding_p = new G4PVPlacement(nullptr, G4ThreeVector(), vert_fiber_outer_cladding_l, "OuterCladding",
                                                        vert_fiber_env_l, false, 0, fCheckOverlaps);
-    G4VPhysicalVolume* vert_fiber_inner_cladding_p = new G4PVPlacement(0, G4ThreeVector(), vert_fiber_inner_cladding_l, "InnerCladding", 
+    G4VPhysicalVolume* vert_fiber_inner_cladding_p = new G4PVPlacement(nullptr, G4ThreeVector(), vert_fiber_inner_cladding_l, "InnerCladding",
                                                        vert_fiber_outer_cladding_l, false, 0, fCheckOverlaps);
-    G4VPhysicalVolume* vert_fiber_core_p           = new G4PVPlacement(0, G4ThreeVector(), vert_fiber_core_l, "FiberCore", 
+    G4VPhysicalVolume* vert_fiber_core_p           = new G4PVPlacement(nullptr, G4ThreeVector(), vert_fiber_core_l, "FiberCore",
                                                        vert_fiber_inner_cladding_l, false, 0, fCheckOverlaps);
-    G4VPhysicalVolume* vert_ru_sipmt_top_p         = new G4PVPlacement(0, G4ThreeVector(0.,0.,0.5 * vert_fiber_env_length - 0.5 * sipm_thickness), 
+    G4VPhysicalVolume* vert_ru_sipmt_top_p         = new G4PVPlacement(nullptr, G4ThreeVector(0.,0.,0.5 * vert_fiber_env_length - 0.5 * sipm_thickness),
                                                        vert_ru_sipmt_l, "SiPMT", vert_fiber_env_l, false, 0, fCheckOverlaps);
    
     G4VPhysicalVolume* vert_ru_sipmt_bot_p         = new G4PVPlacement( G4Transform3D(rot_sipmt,
@@ -992,7 +992,7 @@ OFOS_DetectorConstruction::build_geom()
             }
             else
             {
-                new G4PVPlacement( 0,
+                new G4PVPlacement( nullptr,
                                    G4ThreeVector(xpos,ypos,zpos),
                                    vert_ru_l,
                                    "readout_unit",
@@ -1005,37 +1005,37 @@ OFOS_DetectorConstruction::build_geom()
     }
     
     /// Fill a readout unit with fiber envelopes
-    physFiberEn1 = 0;
-    physFiberEn2 = 0;
-    physFiberEn3 = 0;
-    physFiberEn4 = 0;
+    physFiberEn1 = nullptr;
+    physFiberEn2 = nullptr;
+    physFiberEn3 = nullptr;
+    physFiberEn4 = nullptr;
 
     r_circ = vert_ru_size_ / sqrt(3.0);
     
     switch( vert_ru_geometry_ )
     {
         case ReadoutUnitGeometry::SingleFiber:
-            physFiberEn1 = new G4PVPlacement( 0, G4ThreeVector(), vert_fiber_env_l ,"FiberEnv", vert_ru_l, false, 0, fCheckOverlaps); 
+            physFiberEn1 = new G4PVPlacement( nullptr, G4ThreeVector(), vert_fiber_env_l ,"FiberEnv", vert_ru_l, false, 0, fCheckOverlaps);
             break;
     
         case ReadoutUnitGeometry::Triangle:
-            physFiberEn1 = new G4PVPlacement( 0, G4ThreeVector( -0.5*vert_ru_size_, -0.5*r_circ , 0), vert_fiber_env_l ,"FiberEnv", vert_ru_l, false, 0, fCheckOverlaps); 
-            physFiberEn2 = new G4PVPlacement( 0, G4ThreeVector(  0.5*vert_ru_size_, -0.5*r_circ , 0), vert_fiber_env_l ,"FiberEnv", vert_ru_l, false, 1, fCheckOverlaps); 
-            physFiberEn3 = new G4PVPlacement( 0, G4ThreeVector(  0, r_circ , 0), vert_fiber_env_l ,"FiberEnv", vert_ru_l, false, 2, fCheckOverlaps); 
+            physFiberEn1 = new G4PVPlacement( nullptr, G4ThreeVector( -0.5*vert_ru_size_, -0.5*r_circ , 0), vert_fiber_env_l ,"FiberEnv", vert_ru_l, false, 0, fCheckOverlaps);
+            physFiberEn2 = new G4PVPlacement( nullptr, G4ThreeVector(  0.5*vert_ru_size_, -0.5*r_circ , 0), vert_fiber_env_l ,"FiberEnv", vert_ru_l, false, 1, fCheckOverlaps);
+            physFiberEn3 = new G4PVPlacement( nullptr, G4ThreeVector(  0, r_circ , 0), vert_fiber_env_l ,"FiberEnv", vert_ru_l, false, 2, fCheckOverlaps);
             break;
     
         case ReadoutUnitGeometry::Square:
-            physFiberEn1 = new G4PVPlacement( 0, G4ThreeVector(-0.5*vert_ru_size_,  0.5*vert_ru_size_, 0), vert_fiber_env_l ,"FiberEnv", vert_ru_l, false, 0, fCheckOverlaps); 
-            physFiberEn2 = new G4PVPlacement( 0, G4ThreeVector( 0.5*vert_ru_size_,  0.5*vert_ru_size_, 0), vert_fiber_env_l ,"FiberEnv", vert_ru_l, false, 1, fCheckOverlaps); 
-            physFiberEn3 = new G4PVPlacement( 0, G4ThreeVector(-0.5*vert_ru_size_, -0.5*vert_ru_size_, 0), vert_fiber_env_l ,"FiberEnv", vert_ru_l, false, 2, fCheckOverlaps); 
-            physFiberEn4 = new G4PVPlacement( 0, G4ThreeVector( 0.5*vert_ru_size_, -0.5*vert_ru_size_, 0), vert_fiber_env_l ,"FiberEnv", vert_ru_l, false, 3, fCheckOverlaps); 
+            physFiberEn1 = new G4PVPlacement( nullptr, G4ThreeVector(-0.5*vert_ru_size_,  0.5*vert_ru_size_, 0), vert_fiber_env_l ,"FiberEnv", vert_ru_l, false, 0, fCheckOverlaps);
+            physFiberEn2 = new G4PVPlacement( nullptr, G4ThreeVector( 0.5*vert_ru_size_,  0.5*vert_ru_size_, 0), vert_fiber_env_l ,"FiberEnv", vert_ru_l, false, 1, fCheckOverlaps);
+            physFiberEn3 = new G4PVPlacement( nullptr, G4ThreeVector(-0.5*vert_ru_size_, -0.5*vert_ru_size_, 0), vert_fiber_env_l ,"FiberEnv", vert_ru_l, false, 2, fCheckOverlaps);
+            physFiberEn4 = new G4PVPlacement( nullptr, G4ThreeVector( 0.5*vert_ru_size_, -0.5*vert_ru_size_, 0), vert_fiber_env_l ,"FiberEnv", vert_ru_l, false, 3, fCheckOverlaps);
             break;
     
         default:
-            physFiberEn1 = new G4PVPlacement( 0, G4ThreeVector(-0.5*vert_ru_size_,  0.5*vert_ru_size_, 0), vert_fiber_env_l ,"FiberEnv", vert_ru_l, false, 0, fCheckOverlaps); 
-            physFiberEn2 = new G4PVPlacement( 0, G4ThreeVector( 0.5*vert_ru_size_,  0.5*vert_ru_size_, 0), vert_fiber_env_l ,"FiberEnv", vert_ru_l, false, 1, fCheckOverlaps); 
-            physFiberEn3 = new G4PVPlacement( 0, G4ThreeVector(-0.5*vert_ru_size_, -0.5*vert_ru_size_, 0), vert_fiber_env_l ,"FiberEnv", vert_ru_l, false, 2, fCheckOverlaps); 
-            physFiberEn4 = new G4PVPlacement( 0, G4ThreeVector( 0.5*vert_ru_size_, -0.5*vert_ru_size_, 0), vert_fiber_env_l ,"FiberEnv", vert_ru_l, false, 3, fCheckOverlaps); 
+            physFiberEn1 = new G4PVPlacement( nullptr, G4ThreeVector(-0.5*vert_ru_size_,  0.5*vert_ru_size_, 0), vert_fiber_env_l ,"FiberEnv", vert_ru_l, false, 0, fCheckOverlaps);
+            physFiberEn2 = new G4PVPlacement( nullptr, G4ThreeVector( 0.5*vert_ru_size_,  0.5*vert_ru_size_, 0), vert_fiber_env_l ,"FiberEnv", vert_ru_l, false, 1, fCheckOverlaps);
+            physFiberEn3 = new G4PVPlacement( nullptr, G4ThreeVector(-0.5*vert_ru_size_, -0.5*vert_ru_size_, 0), vert_fiber_env_l ,"FiberEnv", vert_ru_l, false, 2, fCheckOverlaps);
+            physFiberEn4 = new G4PVPlacement( nullptr, G4ThreeVector( 0.5*vert_ru_size_, -0.5*vert_ru_size_, 0), vert_fiber_env_l ,"FiberEnv", vert_ru_l, false, 3, fCheckOverlaps);
             break;
     }
     
@@ -1061,15 +1061,15 @@ OFOS_DetectorConstruction::build_geom()
     G4Colour yellow ( G4Colour::Yellow  ()); 
     
     // Visualization attributes
-    G4VisAttributes* vis_white  = new G4VisAttributes(white  );
-    G4VisAttributes* vis_gray   = new G4VisAttributes(gray   );
-    G4VisAttributes* vis_black  = new G4VisAttributes(black  );
-    G4VisAttributes* vis_red    = new G4VisAttributes(red    );
-    G4VisAttributes* vis_green  = new G4VisAttributes(green  );
-    G4VisAttributes* vis_blue   = new G4VisAttributes(blue   );
-    G4VisAttributes* vis_cyan   = new G4VisAttributes(cyan   );
-    G4VisAttributes* vis_magenta= new G4VisAttributes(magenta);
-    G4VisAttributes* vis_yellow = new G4VisAttributes(yellow );
+    auto* vis_white  = new G4VisAttributes(white  );
+    auto* vis_gray   = new G4VisAttributes(gray   );
+    auto* vis_black  = new G4VisAttributes(black  );
+    auto* vis_red    = new G4VisAttributes(red    );
+    auto* vis_green  = new G4VisAttributes(green  );
+    auto* vis_blue   = new G4VisAttributes(blue   );
+    auto* vis_cyan   = new G4VisAttributes(cyan   );
+    auto* vis_magenta= new G4VisAttributes(magenta);
+    auto* vis_yellow = new G4VisAttributes(yellow );
     
     world_l       ->SetVisAttributes(vis_gray);
     outer_vessel_l->SetVisAttributes(vis_green);
@@ -1082,9 +1082,9 @@ OFOS_DetectorConstruction::build_geom()
    
    
    
-    G4VisAttributes* fiber_inn_vis_att= new G4VisAttributes(G4Colour(1.0,0.0,0.0));
-    G4VisAttributes* fiber_out_vis_att= new G4VisAttributes(G4Colour(0.0,1.0,0.0));
-    G4VisAttributes* fiber_cor_vis_att= new G4VisAttributes(G4Colour(0.0,0.0,1.0));
+    auto* fiber_inn_vis_att= new G4VisAttributes(G4Colour(1.0,0.0,0.0));
+    auto* fiber_out_vis_att= new G4VisAttributes(G4Colour(0.0,1.0,0.0));
+    auto* fiber_cor_vis_att= new G4VisAttributes(G4Colour(0.0,0.0,1.0));
     
     vert_fiber_outer_cladding_l->SetVisAttributes( fiber_out_vis_att );
     vert_fiber_inner_cladding_l->SetVisAttributes( fiber_inn_vis_att );
@@ -1383,7 +1383,7 @@ OFOS_DetectorConstruction::set_ls_loading_material( G4String & value )
 
 
 void 
-OFOS_DetectorConstruction::set_hori_ru_geometry( G4String value )
+OFOS_DetectorConstruction::set_hori_ru_geometry( const G4String& value )
 {
     if(value == "SingleFiber")
         hori_ru_geometry_ = ReadoutUnitGeometry::SingleFiber;
@@ -1405,7 +1405,7 @@ OFOS_DetectorConstruction::set_hori_ru_geometry( G4String value )
 
 
 void 
-OFOS_DetectorConstruction::set_vert_ru_geometry( G4String value )
+OFOS_DetectorConstruction::set_vert_ru_geometry( const G4String& value )
 {
     if(value == "SingleFiber")
         vert_ru_geometry_ = ReadoutUnitGeometry::SingleFiber;

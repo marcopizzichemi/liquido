@@ -4,12 +4,12 @@
 
 
 OFOS_LsMatProperties::OFOS_LsMatProperties() : n_data_(10),
-                                               energy_(0),
-                                               ref_index_(0),
-                                               fast_spectrum_(0),
-                                               slow_spectrum_(0),
-                                               scattering_(0),
-                                               absorption_(0),
+                                               energy_(nullptr),
+                                               ref_index_(nullptr),
+                                               fast_spectrum_(nullptr),
+                                               slow_spectrum_(nullptr),
+                                               scattering_(nullptr),
+                                               absorption_(nullptr),
 
                                                light_yield_(0.),
                                                resolution_scale_(0.),
@@ -57,19 +57,19 @@ OFOS_LsMatProperties::~OFOS_LsMatProperties()
     if(OFOS_Verbosity::level>1)
         G4cout << "OFOS_LsMatProperties :: destructor " << G4endl;
 
-    if(energy_)                  delete energy_;
-    if(ref_index_)               delete ref_index_;
-    if(fast_spectrum_)           delete fast_spectrum_;
-    if(slow_spectrum_)           delete slow_spectrum_;
-    if(scattering_)              delete scattering_;
-    if(absorption_)              delete absorption_;
+                     delete energy_;
+                  delete ref_index_;
+              delete fast_spectrum_;
+              delete slow_spectrum_;
+                 delete scattering_;
+                 delete absorption_;
 
-    energy_        = 0;
-    ref_index_     = 0;
-    fast_spectrum_ = 0;
-    slow_spectrum_ = 0;
-    scattering_    = 0;
-    absorption_    = 0;
+    energy_        = nullptr;
+    ref_index_     = nullptr;
+    fast_spectrum_ = nullptr;
+    slow_spectrum_ = nullptr;
+    scattering_    = nullptr;
+    absorption_    = nullptr;
 }
 
 

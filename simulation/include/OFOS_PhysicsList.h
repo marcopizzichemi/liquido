@@ -44,8 +44,8 @@ protected:
     void ConstructOp();
     void ConstructHad();
     void ConstructHadOld();
-    void ConstructHadEl();//MBA 4/12/15
-    void ConstructHad_QSGP_BIC_HP();//MBA 4/12/15
+    static void ConstructHadEl();//MBA 4/12/15
+    static void ConstructHad_QSGP_BIC_HP();//MBA 4/12/15
     void ConstructDecay(); //MBA 4/12/15
 };
 

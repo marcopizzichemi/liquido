@@ -133,7 +133,7 @@ int main(int argc,char** argv)
   // Process macro or start UI session
   //
   if ( ! ui ) {
-    // barch mode
+    // batch mode
     G4cout << "Exectute " << argv[1] << G4endl;
     G4String command = "/control/execute ";
     G4String fileName = argv[1];
