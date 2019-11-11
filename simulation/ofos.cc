@@ -60,7 +60,7 @@ int main(int argc,char** argv)
   // Detect interactive mode (if no arguments) and define UI session
   //
 
-  OFOS_Verbosity::level = 2;
+  OFOS_Verbosity::level = 1;
   global_ntuples_ptr = 0;
 
   G4UIExecutive* ui = 0;
