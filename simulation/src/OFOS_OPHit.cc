@@ -12,7 +12,7 @@ G4ThreadLocal G4Allocator<OFOS_OPHit>* OFOS_OPHitAllocator=nullptr;
 
 OFOS_OPHit::OFOS_OPHit() : G4VHit(),
                            track_id_    (-1),
-                           parent_id_   (-1),  // Josh addition
+//                           parent_id_   (-1),  // Josh addition
                            type_        (-1),
                            primary_id_  (-1),
                            secondary_id_(-1),
@@ -30,7 +30,7 @@ OFOS_OPHit::~OFOS_OPHit() {}
 OFOS_OPHit::OFOS_OPHit(const OFOS_OPHit& right) : G4VHit()
 {
     track_id_     = right.track_id_    ;
-    parent_id_    = right.parent_id_   ; // Josh addition
+//    parent_id_    = right.parent_id_   ; // Josh addition
     type_         = right.type_        ;
     primary_id_   = right.primary_id_  ;
     secondary_id_ = right.secondary_id_;
@@ -44,7 +44,7 @@ OFOS_OPHit::OFOS_OPHit(const OFOS_OPHit& right) : G4VHit()
 const OFOS_OPHit& OFOS_OPHit::operator=(const OFOS_OPHit& right)
 {
     track_id_     = right.track_id_    ;
-    parent_id_    = right.parent_id_   ;  // Josh addition
+//    parent_id_    = right.parent_id_   ;  // Josh addition
     type_         = right.type_        ;
     primary_id_   = right.primary_id_  ;
     secondary_id_ = right.secondary_id_;

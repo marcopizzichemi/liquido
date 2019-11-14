@@ -86,7 +86,7 @@ OFOS_RunAction::OFOS_RunAction( OFOS_DetectorConstruction *det ):
 OFOS_RunAction::~OFOS_RunAction()
 {
 
-    delete global_ntuples_ptr; 
+    delete global_ntuples_ptr;
     global_ntuples_ptr = nullptr;
 
     if(OFOS_Verbosity::level>0)
@@ -113,8 +113,8 @@ void OFOS_RunAction::BeginOfRunAction(const G4Run* a_run)
     G4cout << "RunAction :: filename = " << out_filename << G4endl;
 
     G4cout << "Init Ntuples" << G4endl;
-    global_ntuples_ptr = new OFOS_OutputNtuples( "op_hits"  , "Optical Photon Hits"          , int(1e6),
-                                                 "mc_truth" , "Electromagnetic Interactions" , int(2e3)); 
+    global_ntuples_ptr = new OFOS_OutputNtuples( "op_hits"  , "Optical Photon Hits"          , int(1e7),
+                                                 "mc_truth" , "Electromagnetic Interactions" , int(1e7));
 
     
     out_filename = "OFOS_output_";

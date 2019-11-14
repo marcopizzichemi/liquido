@@ -61,6 +61,7 @@ void OFOS_TrackingAction::PostUserTrackingAction(const G4Track* track)
                                               pdgid,
                                               start_position,
                                               0., // dE
+                                              0.,
                                               start_time );
     }
 }

@@ -31,7 +31,7 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
  
 ### including ROOT Headers
 EXECUTE_PROCESS(COMMAND root-config --cflags OUTPUT_VARIABLE ROOT_CXX_FLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ROOT_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ROOT_CXX_FLAGS} -O3")
 
 ### standard G4
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)

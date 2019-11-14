@@ -34,7 +34,7 @@
 
 #include "TString.h"
 
-G4int OFOS_SteppingAction::fMaxRndmSave = 10000;
+//G4int OFOS_SteppingAction::fMaxRndmSave = 10000;
 
 
 OFOS_SteppingAction::OFOS_SteppingAction(OFOS_DetectorConstruction *detector) :
@@ -48,8 +48,7 @@ OFOS_SteppingAction::OFOS_SteppingAction(OFOS_DetectorConstruction *detector) :
 
 
 
-OFOS_SteppingAction::~OFOS_SteppingAction() {
-}
+OFOS_SteppingAction::~OFOS_SteppingAction() = default;
 
 
 /***********************************************************************************/
@@ -78,11 +77,9 @@ void OFOS_SteppingAction::UserSteppingAction(const G4Step *theStep) {
     G4String along_step_proc_list = "";
 
 
-    if (thePrePoint)
-        thePrePVname = thePrePV->GetName();
+    thePrePVname = thePrePV->GetName();
 
-    if (thePostPoint)
-        thePostPVname = thePostPV->GetName();
+    thePostPVname = thePostPV->GetName();
 
 
     G4SteppingManager *fpSteppingManager = G4EventManager::GetEventManager()->GetTrackingManager()->GetSteppingManager();
@@ -157,7 +154,8 @@ void OFOS_SteppingAction::UserSteppingAction(const G4Step *theStep) {
                 global_ntuples_ptr->add_chere_phot(proc1->GetNumPhotons());
                 break;
             }
-            default: break;
+            default:
+                break;
         }
     }
 
@@ -166,18 +164,6 @@ void OFOS_SteppingAction::UserSteppingAction(const G4Step *theStep) {
     G4String pp_proc_name = thePostPoint->GetProcessDefinedStep()->GetProcessName();
     G4ProcessType pp_proc_type = thePostPoint->GetProcessDefinedStep()->GetProcessType();
     G4int pp_proc_subtype = thePostPoint->GetProcessDefinedStep()->GetProcessSubType();
-
-
-    /// TODO : why annihilation is never printed out in the case of a positron???
-    /// At the moment annihilations are stored thanks to the TrakingAction invoked
-    //     on gammas, but ideally they should be visible also here.
-    if (pp_proc_type == G4ProcessType::fElectromagnetic &&
-        pp_proc_subtype == G4EmProcessSubType::fAnnihilation) {
-        G4cout << "ANNIHILATION!!! (originated by pdgid " << theTrack->GetDefinition()->GetPDGEncoding() << ")"
-               << G4endl;
-    }
-
-//    G4ParticleDefinition * particleDefinition = theTrack->GetDefinition();
 
 
     /// Check if a sensitive detector is being crossed
@@ -189,7 +175,7 @@ void OFOS_SteppingAction::UserSteppingAction(const G4Step *theStep) {
 
 
     /// check material being crossed
-    if (thePostPV && OFOS_Verbosity::level > 3) {
+    if (OFOS_Verbosity::level > 3) {
         G4cout << G4endl << "pre: " << thePrePVname << "  >>  post: " << thePostPVname << G4endl;
         // G4cout << "time: " << theTrack->GetGlobalTime()/ns << G4endl ;
 
@@ -311,18 +297,18 @@ void OFOS_SteppingAction::UserSteppingAction(const G4Step *theStep) {
     /// track energy loss by primary particle
     if (theTrack->GetTrackID() == 1) {
         const std::vector<const G4Track *> *sec_tracks = theStep->GetSecondaryInCurrentStep();
+//        G4double sec_energy(0.0);
         double en_loss_via_deltas = 0;
         double radiative_en_loss = 0;
 
         for (auto sec_track : *sec_tracks) {
             if (sec_track->GetDefinition()->GetPDGEncoding() == 22 &&
                 /// if the secondary particle is a gamma
-                !(pp_proc_type == G4ProcessType::fElectromagnetic &&          /// that has not been emitted in a
+                !(pp_proc_type == G4ProcessType::fElectromagnetic &&           /// that has not been emitted in a
                   pp_proc_subtype == G4EmProcessSubType::fAnnihilation))       /// annihilation process
-                radiative_en_loss += sec_track->GetKineticEnergy();       /// consider the gamma energy as radiative energy loss
+                radiative_en_loss += sec_track->GetKineticEnergy();            /// consider the gamma energy as radiative energy loss
 
-            else if (sec_track->GetDefinition()->GetPDGEncoding() ==
-                     11) /// if the secondary particle is an electron
+            else if (sec_track->GetDefinition()->GetPDGEncoding() == 11) /// if the secondary particle is an electron
                 en_loss_via_deltas += sec_track->GetKineticEnergy();      /// consider its energy as delta-ray energy loss
         }
         global_ntuples_ptr->add_en_loss_via_deltas(en_loss_via_deltas);
@@ -337,6 +323,7 @@ void OFOS_SteppingAction::UserSteppingAction(const G4Step *theStep) {
                                                  particleDefinition->GetPDGEncoding(),
                                                  thePostPoint->GetPosition(),
                                                  theStep->GetDeltaEnergy(),
+                                                 thePrePoint->GetTotalEnergy(),
                                                  theTrack->GetGlobalTime());
         }
     }
@@ -361,7 +348,6 @@ void OFOS_SteppingAction::UserSteppingAction(const G4Step *theStep) {
 //          global_ntuples_ptr->add_prim_ion_incl_deltas(theStep->GetTotalEnergyDeposit() - theStep->GetNonIonizingEnergyDeposit ());
     }
 
-
     switch (pp_proc_type) {
         case G4ProcessType::fOptical : {
             /// optical photon absorbed (i.e. detected) by a fiber
@@ -371,7 +357,7 @@ void OFOS_SteppingAction::UserSteppingAction(const G4Step *theStep) {
                 }
 
                 /// >>> Process hit in sensitive detector <<<
-                /// However a hit could be generated here (after fetching the SD type, 
+                /// However a hit could be generated here (after fetching the SD type,
                 /// i.e. thisSD->get_sd_type()), and be sent directly to OutputNtuples
                 /// through global_ntuples_ptr->fill_hit(). In this case a loop
                 /// over the hit collection could be avoided at each end of event
@@ -389,11 +375,19 @@ void OFOS_SteppingAction::UserSteppingAction(const G4Step *theStep) {
                 pp_proc_subtype == G4EmProcessSubType::fComptonScattering ||    // 13
                 pp_proc_subtype == G4EmProcessSubType::fAnnihilation ||         // 5
                 pp_proc_subtype == G4EmProcessSubType::fIonisation ||           // 2
-                pp_proc_subtype == G4EmProcessSubType::fCerenkov)               // 2
+                pp_proc_subtype == G4EmProcessSubType::fCerenkov)               // 21
             {
+                // TODO : why annihilation is never printed out in the case of a positron???
+                /// At the moment annihilations are stored thanks to the TrackingAction invoked
+                ///     on gammas, but ideally they should be visible also here.
+                if (pp_proc_subtype == G4EmProcessSubType::fAnnihilation) {
+                    G4cout << "ANNIHILATION!!! (originated by pdgid " << theTrack->GetDefinition()->GetPDGEncoding()
+                           << ")"
+                           << G4endl;
+                }
                 /// energy inherited by secondary particles
                 G4double dE = (thePrePoint->GetTotalEnergy() - thePostPoint->GetTotalEnergy());
-                dE -= theStep->GetTotalEnergyDeposit();
+//                dE -= theStep->GetTotalEnergyDeposit();
                 G4int interaction_id = G4ProcessType::fElectromagnetic * 1000 + pp_proc_subtype;
 
                 if (OFOS_Verbosity::level > 2)
@@ -407,7 +401,9 @@ void OFOS_SteppingAction::UserSteppingAction(const G4Step *theStep) {
                                                      particleDefinition->GetPDGEncoding(),
                                                      thePostPoint->GetPosition(),
                                                      dE,
+                                                     thePrePoint->GetTotalEnergy(),
                                                      theTrack->GetGlobalTime());
+
             }
             break; // case G4ProcessType::fElectromagnetic
         }
@@ -415,7 +411,7 @@ void OFOS_SteppingAction::UserSteppingAction(const G4Step *theStep) {
         case G4ProcessType::fTransportation : {
             if (PDGEEncoding != 0) {
                 G4double dE = (thePrePoint->GetTotalEnergy() - thePostPoint->GetTotalEnergy());
-                dE -= theStep->GetTotalEnergyDeposit();
+//                dE -= theStep->GetTotalEnergyDeposit();
                 G4int interaction_id = G4ProcessType::fHadronic * 1000 + pp_proc_subtype;
 
                 if (OFOS_Verbosity::level > 2)
@@ -429,11 +425,13 @@ void OFOS_SteppingAction::UserSteppingAction(const G4Step *theStep) {
                                                      PDGEEncoding,
                                                      thePostPoint->GetPosition(),
                                                      static_cast<float>(dE),
+                                                     thePrePoint->GetTotalEnergy(),
                                                      static_cast<float>(theTrack->GetGlobalTime()));
             }
             break;
         }
-        default: break;
+        default:
+            break;
     }
 
     /// formating debug output

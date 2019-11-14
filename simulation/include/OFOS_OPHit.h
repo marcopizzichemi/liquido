@@ -29,7 +29,7 @@ public:
     
     // Set methods
     void set_track_id     (G4int id)           { track_id_    = id; };
-    void set_parent_id    (G4int id)           { parent_id_   = id; }; //  Josh addition
+//    void set_parent_id    (G4int id)           { parent_id_   = id; }; //  Josh addition
     void set_sd_type      (G4int type)         { type_        = type; };
     void set_primary_id   (G4int id)           { primary_id_  = id; };
     void set_secondary_id (G4int id)           { secondary_id_= id; };
@@ -41,7 +41,7 @@ public:
     
     // Get methods
     G4int    get_track_id         () const {return track_id_    ;} ;
-    G4int    get_parent_id        () const {return parent_id_   ;} ; //  Josh addition
+//    G4int    get_parent_id        () const {return parent_id_   ;} ; //  Josh addition
     G4int    get_sd_type          () const {return type_        ;} ;
     G4int    get_primary_id       () const {return primary_id_  ;} ;
     G4int    get_secondary_id     () const {return secondary_id_;} ;
@@ -55,7 +55,7 @@ public:
 private:
     
     G4int         track_id_    ;
-    G4int         parent_id_   ; //  Josh addition
+//    G4int         parent_id_   ; //  Josh addition
     G4int         type_        ;
     G4int         primary_id_  ;
     G4int         secondary_id_;

@@ -73,7 +73,7 @@ OFOS_LsMatProperties::~OFOS_LsMatProperties()
 }
 
 
-void 
+void
 OFOS_LsMatProperties::set_dummy_energy()
 {
     for(int i=0; i<n_data_; ++i)
@@ -84,7 +84,7 @@ OFOS_LsMatProperties::set_dummy_energy()
 
 
 
-void 
+void
 OFOS_LsMatProperties::set_dummy_ref_index( double value )
 {
     for(int i=0; i<n_data_; ++i)
@@ -95,7 +95,7 @@ OFOS_LsMatProperties::set_dummy_ref_index( double value )
 
 
 
-void 
+void
 OFOS_LsMatProperties::set_dummy_fast_spectrum( int non_empty_bin )
 {
     for(int i=0; i<n_data_; ++i)
@@ -106,7 +106,7 @@ OFOS_LsMatProperties::set_dummy_fast_spectrum( int non_empty_bin )
 
 
 
-void 
+void
 OFOS_LsMatProperties::set_dummy_slow_spectrum( int non_empty_bin )
 {
     for(int i=0; i<n_data_; ++i)
@@ -117,7 +117,7 @@ OFOS_LsMatProperties::set_dummy_slow_spectrum( int non_empty_bin )
 
 
 
-void 
+void
 OFOS_LsMatProperties::set_dummy_scattering( double value )
 {
     if(OFOS_Verbosity::level>1)
@@ -131,7 +131,7 @@ OFOS_LsMatProperties::set_dummy_scattering( double value )
 
 
 
-void 
+void
 OFOS_LsMatProperties::set_dummy_absorption( double value )
 {
     if(OFOS_Verbosity::level>1)

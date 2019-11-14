@@ -60,7 +60,7 @@ int main(int argc,char** argv)
   // Detect interactive mode (if no arguments) and define UI session
   //
 
-  OFOS_Verbosity::level = 2;
+  OFOS_Verbosity::level = 0;
   global_ntuples_ptr = nullptr;
 
   G4UIExecutive* ui = nullptr;
@@ -70,7 +70,7 @@ int main(int argc,char** argv)
 
   // Choose the Random engine
   G4Random::setTheEngine(new CLHEP::RanecuEngine);
-  
+
   // Construct the default run manager
   //
 
@@ -96,10 +96,10 @@ int main(int argc,char** argv)
 //G4VUserPhysicsList *physicsList = physListFactory->GetReferencePhysList("LBE");
 //runManager->SetUserInitialization(physicsList);
 
-    
+
   // Set user action classes
   runManager->SetUserInitialization(new OFOS_ActionInitialization(det));
-  
+
   // >>> MY DEBUG <<<<
 //G4cout << "runManager->InitializeGeometry()" << G4endl;
 //runManager->InitializeGeometry();

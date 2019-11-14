@@ -52,19 +52,19 @@ OFOS_PhysicsList::OFOS_PhysicsList() : G4VUserPhysicsList()
 }
 
 
-OFOS_PhysicsList::~OFOS_PhysicsList() 
+OFOS_PhysicsList::~OFOS_PhysicsList()
 {
     //delete physicsMessenger;
     //physicsMessenger = 0;
 }
 
 
-void OFOS_PhysicsList::ConstructParticle() 
+void OFOS_PhysicsList::ConstructParticle()
 {
     if(OFOS_Verbosity::level>1) G4cout << "OFOS_PhysicsList::ConstructParticle()" << G4endl;
 
     /// basically all the families except for the short-lived one
-    /// http://geant4.cern.ch/G4UsersDocuments/UsersGuides/ForApplicationDeveloper/html/GettingStarted/particleDef.html
+    /// http://geant4.cern.ch/G4UsersDocuments/UsersGuides/ForApplicationDeveloper/html/GettingStarted/particleDef.html DEADLINK
     G4LeptonConstructor leptonConstructor;
                         leptonConstructor.ConstructParticle();
     G4MesonConstructor  mesonConstructor;
@@ -85,7 +85,7 @@ void OFOS_PhysicsList::ConstructParticle()
 }
 
 
-void OFOS_PhysicsList::ConstructProcess() 
+void OFOS_PhysicsList::ConstructProcess()
 {
     if(OFOS_Verbosity::level>1) G4cout << "OFOS_PhysicsList::ConstructProcess()" << G4endl;
 
@@ -94,12 +94,20 @@ void OFOS_PhysicsList::ConstructProcess()
     ConstructDecay();
     ConstructEM();
     ConstructOp();
+    ConstructHadEl();
+    /// What NOvA uses:
+    // TODO: Add some check for the energy levels being used to decide on physics lists
+    ConstructHad_QGSP_BERT_HP();
 
  // ConstructGeneral();
  // ConstructHad();
 
  // ConstructHad_QSGP_BIC_HP();//MBA 4/12/15 for neutrons
  // ConstructHadEl();//MBA 4/12/15 for neutrons
+
+    /// Added based off of https://geant4.web.cern.ch/node/302 recommendation.
+//    ConstructHad_NuBeam();
+//    ConstructHad_FTFP_BERT();
 
     if(OFOS_Verbosity::level>1)  G4cout << "OFOS_PhysicsList::ConstructProcess() :: Done" << G4endl;
 }
@@ -132,10 +140,10 @@ void OFOS_PhysicsList::ConstructProcess()
 #include "G4hIonisation.hh"
 #include "G4ionIonisation.hh"
 
-void OFOS_PhysicsList::ConstructEM() 
+void OFOS_PhysicsList::ConstructEM()
 {
     if(OFOS_Verbosity::level>1) G4cout << "OFOS_PhysicsList::ConstructEM()" << G4endl;
-    
+
     auto theParticleIterator=GetParticleIterator();
     theParticleIterator->reset();
 
@@ -145,36 +153,36 @@ void OFOS_PhysicsList::ConstructEM()
         G4ProcessManager* pmanager     = particle->GetProcessManager();
         G4String particleName          = particle->GetParticleName();
         G4double charge                = particle->GetPDGCharge();
-        
-        if (particleName == "gamma") 
+
+        if (particleName == "gamma")
         {
             pmanager->AddDiscreteProcess(new G4PhotoElectricEffect);
             pmanager->AddDiscreteProcess(new G4ComptonScattering);
             pmanager->AddDiscreteProcess(new G4GammaConversion);
-        } 
-        else if (particleName == "e-") 
+        }
+        else if (particleName == "e-")
         {
            // G4int G4ProcessManager::AddProcess ( G4VProcess *    aProcess,
            //                                      G4int   ordAtRestDoIt = ordInActive,
            //                                      G4int   ordAlongSteptDoIt = ordInActive,
-           //                                      G4int   ordPostStepDoIt = ordInActive    
-           //                                     )   
+           //                                      G4int   ordPostStepDoIt = ordInActive
+           //                                     )
 
             pmanager->AddProcess(new G4eMultipleScattering,-1, 1, 1);
             pmanager->AddProcess(new G4eIonisation,        -1, 2, 2);
          // DoIt is inactive if ordering parameter is negative (cf G4ProcessManager @ 474)
          // pmanager->AddProcess(new G4eBremsstrahlung(),  -1,-3, 3);  // legacy from Stefano
             pmanager->AddProcess(new G4eBremsstrahlung(),  -1, 3, 3);  // from OpNovice
-            
-        } 
-        else if (particleName == "e+") 
+
+        }
+        else if (particleName == "e+")
         {
-            
+
             /* G4VProcess* theeplusMultipleScattering = new G4eMultipleScattering();
              G4VProcess* theeplusIonisation         = new G4eIonisation();
              G4VProcess* theeplusBremsstrahlung     = new G4eBremsstrahlung();
              G4VProcess* theeplusAnnihilation       = new G4eplusAnnihilation();
-             
+
              pmanager->AddProcess(theeplusMultipleScattering);
              pmanager->AddProcess(theeplusIonisation);
              pmanager->AddProcess(theeplusBremsstrahlung);
@@ -192,41 +200,41 @@ void OFOS_PhysicsList::ConstructEM()
              pmanager->SetProcessOrdering(theeplusIonisation,         idxPostStep,2);
              pmanager->SetProcessOrdering(theeplusBremsstrahlung,     idxPostStep,3);
              pmanager->SetProcessOrdering(theeplusAnnihilation,       idxPostStep,4);*/
-            
+
             pmanager->AddProcess(new G4eMultipleScattering,-1, 1, 1);
             pmanager->AddProcess(new G4eIonisation,        -1, 2, 2);
          // pmanager->AddProcess(new G4eBremsstrahlung,    -1,-3, 3); // legacy from Stefano
             pmanager->AddProcess(new G4eBremsstrahlung,    -1, 3, 3); // from OpNovice
             pmanager->AddProcess(new G4eplusAnnihilation,   0,-1, 4);
-            
+
         } else if (particleName == "mu+" ||
                    particleName == "mu-"    ) {
-            
+
             pmanager->AddProcess(new G4hMultipleScattering,-1, 1, 1);
             pmanager->AddProcess(new G4MuIonisation,       -1, 2, 2);
          // pmanager->AddProcess(new G4MuBremsstrahlung,   -1,-3, 3); // legacy from Stefano
          // pmanager->AddProcess(new G4MuPairProduction,   -1,-4, 4); // legacy from Stefano
             pmanager->AddProcess(new G4MuBremsstrahlung,   -1, 3, 3); // from OpNovice
             pmanager->AddProcess(new G4MuPairProduction,   -1, 4, 4); // from OpNovice
-            
-            
+
+
         } else if (particleName == "alpha" ||
                    particleName == "He3" ||
                    particleName == "GenericIon") {
-            
+
             pmanager->AddProcess(new G4hMultipleScattering, -1, 1, 1);
             pmanager->AddProcess(new G4ionIonisation,       -1, 2, 2);
             //     pmanager->AddProcess(new G4hLowEnergyIonisation  -1, 2, 2);
-            
+
         } else if (particleName == "pi+" ||
                    particleName == "pi-" ||
                    particleName == "proton" ) {
-            
+
             pmanager->AddProcess(new G4hMultipleScattering, -1, 1, 1);
             pmanager->AddProcess(new G4hIonisation,         -1, 2, 2);
             pmanager->AddProcess(new G4hBremsstrahlung,     -1,-3, 3);
             pmanager->AddProcess(new G4hPairProduction,     -1,-4, 4);
-            
+
         } else if (particleName == "B+" ||
                    particleName == "B-" ||
                    particleName == "D+" ||
@@ -257,22 +265,22 @@ void OFOS_PhysicsList::ConstructEM()
                    particleName == "xi_c+" ||
                    particleName == "xi-" ||
                    (particleName == "nucleus" && charge != 0)) {
-            
+
             pmanager->AddProcess(new G4hMultipleScattering, -1, 1, 1);
             pmanager->AddProcess(new G4hIonisation,         -1, 2, 2);
-            
+
         } else if  ((!particle->IsShortLived()) &&
                     (particle->GetPDGCharge() != 0.0) &&
                     (particle->GetParticleName() != "chargedgeantino")) {
-            
+
             pmanager->AddProcess(new G4hMultipleScattering, -1, 1, 1);
             pmanager->AddProcess(new G4hIonisation,         -1, 2, 2);
-            
+
         }
     }
-    
-    
-   
+
+
+
     if(OFOS_Verbosity::level>1) G4cout << "OFOS_PhysicsList::ConstructEM() :: Done" << G4endl;
 }
 
@@ -299,7 +307,7 @@ void OFOS_PhysicsList::ConstructEM()
 
 void OFOS_PhysicsList::ConstructOp()
 {
-    
+
     if(OFOS_Verbosity::level>1) G4cout << "OFOS_PhysicsList::ConstructOp()" << G4endl;
     
     auto* theScintProcess = new G4Scintillation("Scintillation");
@@ -417,6 +425,37 @@ void OFOS_PhysicsList::ConstructHad_QSGP_BIC_HP() {
     G4cout << "Hadronic Physics Active: QSGP_BIC_HP model :: Done" << G4endl;
     
 }
+
+
+#include "G4HadronPhysicsNuBeam.hh"
+void OFOS_PhysicsList::ConstructHad_NuBeam() {
+    G4cout << "Hadronic Physics Active: NuBeam" << G4endl;
+    auto *hadPhysicsList = new G4HadronPhysicsNuBeam;
+    hadPhysicsList->SetVerboseLevel(0);
+    hadPhysicsList->ConstructProcess();
+    G4cout << "Nu Beam Hadronic Physics Active: NuBeam :: Done" << G4endl;
+}
+
+
+#include "G4HadronPhysicsFTFP_BERT.hh"
+void OFOS_PhysicsList::ConstructHad_FTFP_BERT() {
+    G4cout << "Hadronic Physics Active: FTFP_BERT model" << G4endl;
+    auto *hadPhysicsList = new G4HadronPhysicsFTFP_BERT;
+    hadPhysicsList->SetVerboseLevel(0);
+    hadPhysicsList->ConstructProcess();
+    G4cout << "Hadronic Physics Active: FTFP_BERT model :: Done" << G4endl;
+}
+
+
+#include "G4HadronPhysicsQGSP_BERT_HP.hh"
+void OFOS_PhysicsList::ConstructHad_QGSP_BERT_HP() {
+    G4cout << "Hadronic Physics Active: QGSP_BERT_HP model" << G4endl;
+    auto *hadPhysicsList = new G4HadronPhysicsQGSP_BERT_HP;
+    hadPhysicsList->SetVerboseLevel(0);
+    hadPhysicsList->ConstructProcess();
+    G4cout << "Hadronic Physics Active: QGSP_BERT_HP model :: Done" << G4endl;
+}
+
 
 
 #include "G4Decay.hh"

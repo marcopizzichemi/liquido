@@ -47,6 +47,11 @@ protected:
     static void ConstructHadEl();//MBA 4/12/15
     static void ConstructHad_QSGP_BIC_HP();//MBA 4/12/15
     void ConstructDecay(); //MBA 4/12/15
+    void ConstructHad_NuBeam();
+
+    void ConstructHad_FTFP_BERT();
+
+    void ConstructHad_QGSP_BERT_HP();
 };
 
 #endif

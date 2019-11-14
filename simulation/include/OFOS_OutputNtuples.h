@@ -18,7 +18,7 @@ class OFOS_OutputNtuples
         void store_event() ;
 
         bool fill_hit( const OFOS_OPHit *a_hit );
-        bool fill_interaction( int track_id, int parent_id, int interaction_id, int particle,  const G4ThreeVector &pos, float dE, float time ); 
+        bool fill_interaction( int track_id, int parent_id, int interaction_id, int particle,  const G4ThreeVector &pos, float dE, float E, float time );
 
         inline void add_edep( double e )    { tot_en_dep_   += (e/MeV); };
         inline void add_ls_ion (double e)   { ion_en_in_ls_       += (e/MeV); };
@@ -49,14 +49,15 @@ class OFOS_OutputNtuples
         int         n_max_interactions_;
         int         n_interactions_;
         bool        is_ni_overflow_;
-        int        *t_id_;
-        int        *p_id_;
-        int        *i_id_;
+        int        *track_id_;
+        int        *parent_id_;
+        int        *interaction_id_;
         int        *i_particle_;
         float      *i_pos_x_;
         float      *i_pos_y_;
         float      *i_pos_z_;
         float      *i_dE_;
+        float      *i_E_;
         float      *i_time_;
         bool        is_evt_contained_;
 
@@ -66,7 +67,7 @@ class OFOS_OutputNtuples
         bool        is_nh_overflow_;
         int         n_hits_;
         int        *h_track_id_    ;
-        int        *h_parent_id_;  // Josh addition
+//        int        *h_parent_id_;  // Josh addition
         int        *h_sd_type_     ;
         int        *h_primary_id_  ;
         int        *h_secondary_id_;

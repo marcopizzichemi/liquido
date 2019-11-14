@@ -144,7 +144,7 @@ G4bool OFOS_OpticalPhotonSD::process_hit( const G4Step* aStep, const G4Touchable
 
     /// fill hit
     aHit->set_track_id     (theTrack->GetTrackID());
-    aHit->set_parent_id    (theTrack->GetParentID());  // Josh addition
+//    aHit->set_parent_id    (theTrack->GetParentID());  // Josh addition
     aHit->set_sd_type      ( static_cast<G4int>(type_) );
     aHit->set_primary_id   ( pid );
     aHit->set_secondary_id ( sid );
