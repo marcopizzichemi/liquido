@@ -32,7 +32,7 @@ public:
   //  TrackInformation(const TrackInformation* aninfo) 
   // { saveit = aninfo->saveit;}
 
-  OFOS_TrackInformation(const G4Track*);
+  explicit OFOS_TrackInformation(const G4Track*);
 
   virtual ~OFOS_TrackInformation() {}
   

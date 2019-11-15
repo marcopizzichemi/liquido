@@ -1,6 +1,7 @@
 #ifndef OFOS_DetectorConstruction_h
 #define OFOS_DetectorConstruction_h 1
 
+#include <Geant4/G4TransportationManager.hh>
 #include "globals.hh"
 #include "G4VUserDetectorConstruction.hh"
 #include "G4MaterialPropertiesTable.hh"
@@ -57,8 +58,8 @@ class OFOS_DetectorConstruction : public G4VUserDetectorConstruction
     void deploy_ls_properties();
 
     /// setters
-    void set_vert_ru_geometry ( G4String value );
-    void set_hori_ru_geometry ( G4String value );
+    void set_vert_ru_geometry ( const G4String& value );
+    void set_hori_ru_geometry ( const G4String& value );
     void set_number_ru_x      ( G4int    value ) { number_ru_x_      = value; }
     void set_number_ru_y      ( G4int    value ) { number_ru_y_      = value; }
     void set_number_ru_z      ( G4int    value ) { number_ru_z_      = value; }
@@ -73,7 +74,7 @@ class OFOS_DetectorConstruction : public G4VUserDetectorConstruction
 
     void update_geom();
 
-    inline G4Material* get_ls_material() { return (logic_ls_ ? logic_ls_->GetMaterial() : 0);}
+    inline G4Material* get_ls_material() { return (logic_ls_ ? logic_ls_->GetMaterial() : nullptr);}
 
 
   private:
@@ -150,11 +151,13 @@ class OFOS_DetectorConstruction : public G4VUserDetectorConstruction
 
     OFOS_DetectorMessenger *messenger_;
 
-    static G4ThreadLocal G4GlobalMagFieldMessenger*  fMagFieldMessenger; 
+    static G4ThreadLocal G4GlobalMagFieldMessenger*  fMagFieldMessenger;
                                          // magnetic field messenger
-    
+
+
     G4bool  fCheckOverlaps; // option to activate checking of volumes overlaps 
 
+    void set_field();
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

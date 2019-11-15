@@ -3,7 +3,7 @@
 
 class OFOS_Verbosity
 {
-    public:
+public:
         static int level;
 };
 

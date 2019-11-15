@@ -60,26 +60,25 @@ int main(int argc,char** argv)
   // Detect interactive mode (if no arguments) and define UI session
   //
 
-  OFOS_Verbosity::level = 1;
-  global_ntuples_ptr = 0;
 
-  G4UIExecutive* ui = 0;
+  OFOS_Verbosity::level = 0;
+  global_ntuples_ptr = nullptr;
+
+
+  G4UIExecutive* ui = nullptr;
   if ( argc == 1 ) {
     ui = new G4UIExecutive(argc, argv);
   }
 
   // Choose the Random engine
   G4Random::setTheEngine(new CLHEP::RanecuEngine);
-  
+
   // Construct the default run manager
   //
-#ifdef G4MULTITHREADED
-  G4MTRunManager* runManager = new G4MTRunManager;
-#else
-  G4RunManager* runManager = new G4RunManager;
-#endif
 
-  OFOS_DetectorConstruction * det = new OFOS_DetectorConstruction();
+  auto* runManager = new G4RunManager;
+
+  auto * det = new OFOS_DetectorConstruction();
 
   // Set mandatory initialization classes
   //
@@ -89,7 +88,7 @@ int main(int argc,char** argv)
 //physicsList->RegisterPhysics(new G4StepLimiterPhysics());
 
   /// customized physics list, inherited by Stefano
-  OFOS_PhysicsList *physicsList = new OFOS_PhysicsList;
+  auto *physicsList = new OFOS_PhysicsList;
   runManager->SetUserInitialization(physicsList);
 
   /// Now using standard physics list
@@ -99,10 +98,10 @@ int main(int argc,char** argv)
 //G4VUserPhysicsList *physicsList = physListFactory->GetReferencePhysList("LBE");
 //runManager->SetUserInitialization(physicsList);
 
-    
+
   // Set user action classes
   runManager->SetUserInitialization(new OFOS_ActionInitialization(det));
-  
+
   // >>> MY DEBUG <<<<
 //G4cout << "runManager->InitializeGeometry()" << G4endl;
 //runManager->InitializeGeometry();
@@ -136,7 +135,7 @@ int main(int argc,char** argv)
   // Process macro or start UI session
   //
   if ( ! ui ) {
-    // barch mode
+    // batch mode
     G4cout << "Exectute " << argv[1] << G4endl;
     G4String command = "/control/execute ";
     G4String fileName = argv[1];

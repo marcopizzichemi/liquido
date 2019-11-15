@@ -66,7 +66,7 @@ OFOS_RunAction::get_current_time()
 
 OFOS_RunAction::OFOS_RunAction( OFOS_DetectorConstruction *det ):
     G4UserRunAction(), // ,messenger(0)
-    output_hit_file_(0),
+    output_hit_file_(nullptr),
     detector_( det )
 { 
     G4cout << "OFOS_RunAction::OFOS_RunAction()" << G4endl;
@@ -86,8 +86,8 @@ OFOS_RunAction::OFOS_RunAction( OFOS_DetectorConstruction *det ):
 OFOS_RunAction::~OFOS_RunAction()
 {
 
-    delete global_ntuples_ptr; 
-    global_ntuples_ptr = 0;
+    delete global_ntuples_ptr;
+    global_ntuples_ptr = nullptr;
 
     if(OFOS_Verbosity::level>0)
 	G4cout << "OFOS_RunAction deleted" << G4endl;
@@ -113,8 +113,8 @@ void OFOS_RunAction::BeginOfRunAction(const G4Run* a_run)
     G4cout << "RunAction :: filename = " << out_filename << G4endl;
 
     G4cout << "Init Ntuples" << G4endl;
-    global_ntuples_ptr = new OFOS_OutputNtuples( "op_hits"  , "Optical Photon Hits"          , int(1e6),
-                                                 "mc_truth" , "Electromagnetic Interactions" , int(2e3)); 
+    global_ntuples_ptr = new OFOS_OutputNtuples( "op_hits"  , "Optical Photon Hits"          , int(1e7),
+                                                 "mc_truth" , "Electromagnetic Interactions" , int(1e7));
 
     
     out_filename = "OFOS_output_";
@@ -159,8 +159,8 @@ void OFOS_RunAction::BeginOfRunAction(const G4Run* a_run)
 
 
     
-    G4Element* elementXe = new G4Element("Xenon","Xe",54.,131.29*g/mole);
-    G4Material* LXe = new G4Material ("LXeâ",3.02*g/cm3, 1, kStateLiquid, 173.15*kelvin, 1.5*atmosphere);
+    auto* elementXe = new G4Element("Xenon","Xe",54.,131.29*g/mole);
+    auto* LXe = new G4Material ("LXeï¿½",3.02*g/cm3, 1, kStateLiquid, 173.15*kelvin, 1.5*atmosphere);
     LXe -> AddElement(elementXe, 1);
 
 
@@ -326,7 +326,7 @@ void OFOS_RunAction::EndOfRunAction(const G4Run* )
     G4cout << "EndOfRunAction :: all files closed " << G4endl;
 
  // delete global_ntuples_ptr; <-- NOT ALLOWED
-    global_ntuples_ptr = 0;
+    global_ntuples_ptr = nullptr;
     
 }
 

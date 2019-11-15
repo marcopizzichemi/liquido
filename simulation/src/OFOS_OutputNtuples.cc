@@ -1,26 +1,26 @@
 #include "OFOS_OutputNtuples.h"
 
 
-OFOS_OutputNtuples::OFOS_OutputNtuples(const char *h_name, const char *h_title, int n_max_hits, const char *i_name, const char *i_title, int n_max_interactions) : 
-    n_max_hits_(n_max_hits),
-    n_hits_(0),
-    is_nh_overflow_(false),
-    collection_eff_(0.0),
-    n_max_interactions_(n_max_interactions),
-    n_interactions_(0),
-    is_ni_overflow_(false),
-    is_evt_contained_(true),
+OFOS_OutputNtuples::OFOS_OutputNtuples(const char *h_name, const char *h_title, int n_max_hits, const char *i_name, const char *i_title, int n_max_interactions) :
+        n_max_hits_(n_max_hits),
+        n_hits_(0),
+        is_nh_overflow_(false),
+        collection_eff_(0.0),
+        n_max_interactions_(n_max_interactions),
+        n_interactions_(0),
+        is_ni_overflow_(false),
+        is_evt_contained_(true),
 
-    tot_en_dep_(0.),
-    ion_en_in_ls_(0.),
-    primary_ionization_(0.),
+        tot_en_dep_(static_cast<float>(0.)),
+        ion_en_in_ls_(static_cast<float>(0.)),
+        primary_ionization_(static_cast<float>(0.)),
 //  primary_ionization_incl_deltas_(0),
-    en_loss_via_deltas_(0.),
-    radiative_en_loss_ (0.),
+        en_loss_via_deltas_(static_cast<float>(0.)),
+        radiative_en_loss_ (static_cast<float>(0.)),
 
-    n_scint_phot_(0),
-    n_chere_phot_(0),
-    n_lost_phot_(0)
+        n_scint_phot_(0),
+        n_chere_phot_(0),
+        n_lost_phot_(0)
 {
     hit_tree_   = new TTree(h_name, h_title);
     truth_tree_ = new TTree(i_name, i_title);
@@ -41,6 +41,7 @@ void
 OFOS_OutputNtuples::init_arrays()
 {
     h_track_id_    = new int    [n_max_hits_];
+//    h_parent_id_   = new int    [n_max_hits_];
     h_sd_type_     = new int    [n_max_hits_];
     h_primary_id_  = new int    [n_max_hits_];
     h_secondary_id_= new int    [n_max_hits_];
@@ -55,14 +56,15 @@ OFOS_OutputNtuples::init_arrays()
     h_pol_z_       = new float  [n_max_hits_];
 
 
-    t_id_          = new int   [n_max_interactions_];
-    p_id_          = new int   [n_max_interactions_];
-    i_id_          = new int   [n_max_interactions_];
-    i_pos_x_       = new float [n_max_interactions_]; 
+    track_id_          = new int   [n_max_interactions_];
+    parent_id_          = new int   [n_max_interactions_];
+    interaction_id_          = new int   [n_max_interactions_];
+    i_pos_x_       = new float [n_max_interactions_];
     i_pos_y_       = new float [n_max_interactions_];
     i_pos_z_       = new float [n_max_interactions_];
     i_particle_    = new int   [n_max_interactions_];
     i_dE_          = new float [n_max_interactions_];
+    i_E_           = new float [n_max_interactions_];
     i_time_        = new float [n_max_interactions_];
 
 }
@@ -74,6 +76,7 @@ OFOS_OutputNtuples::set_branches()
     hit_tree_->Branch( "n_hits"         , &n_hits_         , "n_hits/I");
     hit_tree_->Branch( "is_nh_overflow" , &is_nh_overflow_ , "is_nh_overflow/O");
     hit_tree_->Branch( "h_track_id"     , h_track_id_      , "h_track_id[n_hits]/I");
+//    hit_tree_->Branch( "h_parent_id"    , h_parent_id_     , "h_parent_id[n_hits]/I");
     hit_tree_->Branch( "h_sd_type"      , h_sd_type_       , "h_sd_type[n_hits]/I");
     hit_tree_->Branch( "h_primary_id"   , h_primary_id_    , "h_primary_id[n_hits]/I");
     hit_tree_->Branch( "h_secondary_id" , h_secondary_id_  , "h_secondary_id[n_hits]/I");
@@ -98,14 +101,15 @@ OFOS_OutputNtuples::set_branches()
 //  truth_tree_->Branch( "ion_en_in_ls"      , &ion_en_in_ls_       , "ion_en_in_ls_/F"      );
     truth_tree_->Branch( "n_scint_phot"      , &n_scint_phot_       , "n_scint_phot/I");
     truth_tree_->Branch( "n_chere_phot"      , &n_chere_phot_       , "n_chere_phot/I");
-    truth_tree_->Branch( "track_id"          , t_id_                , "track_id[n_interactions]/I"      );
-    truth_tree_->Branch( "parent_id"         , p_id_                , "parent_id[n_interactions]/I"      );
-    truth_tree_->Branch( "interaction_id"    , i_id_                , "interaction_id[n_interactions]/I"      );
+    truth_tree_->Branch("track_id"          , track_id_                , "track_id[n_interactions]/I"      );
+    truth_tree_->Branch("parent_id"         , parent_id_                , "parent_id[n_interactions]/I"      );
+    truth_tree_->Branch("interaction_id"    , interaction_id_                , "interaction_id[n_interactions]/I"      );
     truth_tree_->Branch( "i_particle"        , i_particle_          , "i_particle[n_interactions]/I");
     truth_tree_->Branch( "i_pos_x"           , i_pos_x_             , "i_pos_x[n_interactions]/F"   );
     truth_tree_->Branch( "i_pos_y"           , i_pos_y_             , "i_pos_y[n_interactions]/F"   );
     truth_tree_->Branch( "i_pos_z"           , i_pos_z_             , "i_pos_z[n_interactions]/F"   );
     truth_tree_->Branch( "i_dE"              , i_dE_                , "i_dE[n_interactions]/F"      );
+    truth_tree_->Branch( "i_E"               , i_E_                 , "i_E[n_interactions]/F"      );
     truth_tree_->Branch( "i_time"            , i_time_              , "i_time[n_interactions]/F"    );
     truth_tree_->Branch( "is_evt_contained"  , &is_evt_contained_   , "is_evt_contained_/O"         );
 }
@@ -117,6 +121,7 @@ OFOS_OutputNtuples::~OFOS_OutputNtuples()
     G4cout << "Deleting OFOS_OutputNtuples" << G4endl;
 
     delete h_track_id_    ;
+//    delete h_parent_id_   ;
     delete h_sd_type_     ;
     delete h_primary_id_  ;
     delete h_secondary_id_;
@@ -130,14 +135,15 @@ OFOS_OutputNtuples::~OFOS_OutputNtuples()
     delete h_pol_y_       ;
     delete h_pol_z_       ;
 
-    delete t_id_;
-    delete p_id_;
-    delete i_id_;
+    delete track_id_;
+    delete parent_id_;
+    delete interaction_id_;
     delete i_pos_x_;
     delete i_pos_y_;
     delete i_pos_z_;
     delete i_particle_;
     delete i_dE_;
+    delete i_E_;
     delete i_time_;
 
     delete hit_tree_ ;
@@ -148,8 +154,8 @@ OFOS_OutputNtuples::~OFOS_OutputNtuples()
 
 
 
-bool 
-OFOS_OutputNtuples::fill_interaction( int track_id, int parent_id, int interaction_id, int particle,  const G4ThreeVector &pos, float dE, float time ) 
+bool
+OFOS_OutputNtuples::fill_interaction( int track_id, int parent_id, int interaction_id, int particle,  const G4ThreeVector &pos, float dE, float E, float time )
 {
     if(n_interactions_ == n_max_interactions_)
     {
@@ -157,15 +163,16 @@ OFOS_OutputNtuples::fill_interaction( int track_id, int parent_id, int interacti
         return false;
     }
 
-    t_id_      [n_interactions_] = track_id;
-    i_id_      [n_interactions_] = interaction_id;
-    p_id_      [n_interactions_] = parent_id;
+    track_id_      [n_interactions_] = track_id;
+    interaction_id_      [n_interactions_] = interaction_id;
+    parent_id_      [n_interactions_] = parent_id;
     i_particle_[n_interactions_] = particle;
-    i_pos_x_   [n_interactions_] = pos.x() / mm;
-    i_pos_y_   [n_interactions_] = pos.y() / mm;
-    i_pos_z_   [n_interactions_] = pos.z() / mm;
-    i_dE_      [n_interactions_] = dE / MeV;
-    i_time_    [n_interactions_] = time / ns; 
+    i_pos_x_   [n_interactions_] = static_cast<float>(pos.x() / mm);
+    i_pos_y_   [n_interactions_] = static_cast<float>(pos.y() / mm);
+    i_pos_z_   [n_interactions_] = static_cast<float>(pos.z() / mm);
+    i_dE_      [n_interactions_] = static_cast<float>(dE / MeV);
+    i_E_       [n_interactions_] = static_cast<float>(E / MeV);
+    i_time_    [n_interactions_] = static_cast<float>(time / ns);
 
 
     n_interactions_++;
@@ -175,7 +182,7 @@ OFOS_OutputNtuples::fill_interaction( int track_id, int parent_id, int interacti
 
 
 
-bool 
+bool
 OFOS_OutputNtuples::fill_hit( const OFOS_OPHit *a_hit )
 {
     if(n_hits_ == n_max_hits_)
@@ -185,6 +192,7 @@ OFOS_OutputNtuples::fill_hit( const OFOS_OPHit *a_hit )
     }
 
     h_track_id_    [n_hits_] = static_cast<int>   (a_hit->get_track_id());
+//    h_parent_id_   [n_hits_] = static_cast<int>   (a_hit->get_parent_id());
     h_sd_type_     [n_hits_] = static_cast<int>   (a_hit->get_sd_type());
     h_primary_id_  [n_hits_] = static_cast<int>   (a_hit->get_primary_id());
     h_secondary_id_[n_hits_] = static_cast<int>   (a_hit->get_secondary_id());
@@ -203,7 +211,7 @@ OFOS_OutputNtuples::fill_hit( const OFOS_OPHit *a_hit )
     return true;
 }
 
-bool 
+bool
 OFOS_OutputNtuples::fill_all_branches( double value )
 {
     if(n_hits_ == n_max_hits_)
@@ -213,11 +221,12 @@ OFOS_OutputNtuples::fill_all_branches( double value )
     }
 
     h_track_id_    [n_hits_] = static_cast<int>   (value);
+//    h_parent_id_   [n_hits_] = static_cast<int>   (value);
     h_sd_type_     [n_hits_] = static_cast<int>   (value);
     h_primary_id_  [n_hits_] = static_cast<int>   (value);
     h_secondary_id_[n_hits_] = static_cast<int>   (value);
     h_gen_proc_    [n_hits_] = static_cast<int>   (value);
-    h_time_        [n_hits_] = static_cast<double>(value);
+    h_time_        [n_hits_] = value;
     h_wavelength_  [n_hits_] = static_cast<float> (value);
     h_pos_x_       [n_hits_] = static_cast<float> (value);
     h_pos_y_       [n_hits_] = static_cast<float> (value);
@@ -240,7 +249,7 @@ OFOS_OutputNtuples::store_event()
 //  G4cout << "store_event() :: n_scin: " << n_scint_phot_ << "   n_chere: " << n_chere_phot_ 
 //         << "  n_lost: " << n_lost_phot_ << G4endl;
     n_hits_ = 0;
- // n_lost_phot_ = 0;
+    // n_lost_phot_ = 0;
 
     truth_tree_->Fill();
 //  G4cout << "tot_edep = " << tot_en_dep_ << G4endl
