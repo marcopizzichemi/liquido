@@ -322,9 +322,10 @@ void OFOS_SteppingAction::UserSteppingAction(const G4Step *theStep) {
                                                  100,
                                                  particleDefinition->GetPDGEncoding(),
                                                  thePostPoint->GetPosition(),
-                                                 theStep->GetDeltaEnergy(),
+                                                 thePrePoint->GetKineticEnergy() - thePostPoint->GetKineticEnergy(),
                                                  thePrePoint->GetTotalEnergy(),
                                                  theTrack->GetGlobalTime());
+
         }
     }
 
