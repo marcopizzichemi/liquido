@@ -11,7 +11,7 @@
 
 /random/setSeeds 2355467 2355467
 
-/OFOS/ls/scattering 0.5 m
+/OFOS/ls/scattering 0.5 cm
 /OFOS/ls/absorption 5.0 m
 # birks constant in mm/MeV
 /OFOS/ls/birks 1e-9 
