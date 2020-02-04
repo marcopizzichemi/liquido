@@ -1,7 +1,7 @@
 #ifndef OFOS_DetectorConstruction_h
 #define OFOS_DetectorConstruction_h 1
 
-#include <Geant4/G4TransportationManager.hh>
+#include "G4TransportationManager.hh"
 #include "globals.hh"
 #include "G4VUserDetectorConstruction.hh"
 #include "G4MaterialPropertiesTable.hh"
