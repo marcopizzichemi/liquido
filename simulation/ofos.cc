@@ -49,7 +49,7 @@
 #include "G4PhysListFactory.hh"
 
 #include "OFOS_Verbosity.h"
-#include "OFOS_OutputNtuples.h" 
+#include "OFOS_OutputNtuples.h"
 #include "OFOS_GlobalNtuplesPtr.h"
 
 
@@ -66,7 +66,7 @@ int main(int argc,char** argv)
 
 
   G4UIExecutive* ui = nullptr;
-  if ( argc == 1 ) {
+  if ( argc == 1  || argc == 3 ) {
     ui = new G4UIExecutive(argc, argv);
   }
 
@@ -134,7 +134,16 @@ int main(int argc,char** argv)
 
   // Process macro or start UI session
   //
-  if ( ! ui ) {
+  if ( argc == 1 ) {
+    // interactive mode
+    UImanager->ApplyCommand("/control/execute init_vis.mac");
+    if (ui->IsGUI()) {
+      UImanager->ApplyCommand("/control/execute gui.mac");
+    }
+    ui->SessionStart();
+    delete ui;
+  }
+  if ( argc == 2 ) {
     // batch mode
     G4cout << "Exectute " << argv[1] << G4endl;
     G4String command = "/control/execute ";
@@ -142,7 +151,12 @@ int main(int argc,char** argv)
     UImanager->ApplyCommand(command+fileName);
     G4cout << argv[1] << " Execution : Done" << G4endl;
   }
-  else {  
+  if (argc == 3 ) {
+    // show interactive mode for the configuration specified by the macro
+    G4cout << "Exectute " << argv[1] << G4endl;
+    G4String command = "/control/execute ";
+    G4String fileName = argv[1];
+    UImanager->ApplyCommand(command+fileName);
     // interactive mode
     UImanager->ApplyCommand("/control/execute init_vis.mac");
     if (ui->IsGUI()) {
