@@ -91,7 +91,9 @@ void OFOS_SteppingAction::UserSteppingAction(const G4Step *theStep) {
         G4cout << G4endl << "*** WARNING :: Particle touching World Volume >>> Killing Track " << G4endl;
         return;
     }
-    if (thePostPVname.data()[0] == 'B') /// shortcut for Buffer
+    if (thePostPVname.data()[0] == 'B' // shortcut for Buffer
+        && thePrePVname == "LsVessel"  // only if particle is coming from inside liquido vessel (i.e. pointing outwards)
+        )
     {
         theTrack->SetTrackStatus(fStopAndKill);
         global_ntuples_ptr->add_lost_phot(1);
