@@ -1,0 +1,57 @@
+/run/initialize
+
+/globalField/setValue 0 4 0 T
+
+/gps/particle mu+
+/gps/ene/mono 10 GeV
+/gps/direction 1 0 0
+/gps/pos/type Point
+/gps/pos/centre -110.0 0.0 0.0 cm
+/gps/ene/type Mono
+
+/random/setSeeds 2355467 2355467
+
+/OFOS/ls/scattering 0.5 cm
+/OFOS/ls/absorption 5.0 m
+# birks constant in mm/MeV
+/OFOS/ls/birks 1e-9
+/OFOS/ls/density 0.9
+/OFOS/ls/loading_fraction 1e-9
+/OFOS/ls/loading_material Pb
+# number of photons per MeV
+/OFOS/ls/lightyield 10000
+
+
+
+/OFOS/geom/num_ru_x 1
+/OFOS/geom/num_ru_y 100
+/OFOS/geom/num_ru_z 1
+
+/OFOS/geom/ru_xy_pitch 1.0 cm
+/OFOS/geom/ru_xy_size  0.2 cm
+/OFOS/geom/ru_xy_geom SingleFiber
+#/OFOS/geom/ru_xy_geom Triangle
+#/OFOS/geom/ru_xy_geom Square
+
+/OFOS/geom/ru_z_geom SingleFiber
+/OFOS/geom/ru_z_pitch 300 cm
+/OFOS/geom/ru_z_size  0.2 cm
+
+/OFOS/geom/extra_space 5 mm
+#/OFOS/geom/lattice_fixed_x 20 cm
+#/OFOS/geom/lattice_fixed_y 5 mm
+/OFOS/geom/lattice_fixed_z 1 m
+/OFOS/geom/num_layers_x 1
+
+/OFOS/geom/fiber_radius 0.25 mm
+/OFOS/geom/out_cladding_frac 0.03
+/OFOS/geom/inn_cladding_frac 0.03
+
+#/globalField/setValue 0 1 0 Tesla
+
+/OFOS/detector/build
+
+#/run/beamOn 1
+
+#/vis/viewer/set/viewpointThetaPhi 180. 90.
+#/vis/scene/add/axes 0 0 0 1 m

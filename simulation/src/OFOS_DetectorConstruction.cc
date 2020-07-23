@@ -34,9 +34,12 @@
 #include "OFOS_LsMatProperties.h"
 #include "OFOS_OutputLog.h"
 
+#include <OFOS_LsVesselParametrization.h>
+
+
 
 /******************
- *   
+ *
  *   Readout Unit Geometry
  *
  *   Horizontal Readout Units [new]:
@@ -83,12 +86,19 @@ OFOS_DetectorConstruction::OFOS_DetectorConstruction() : G4VUserDetectorConstruc
     hori_ru_distance_ = 10.0 * cm;
     hori_ru_size_ = 0.2 * cm;
     fiber_radius_ = 0.25 * mm;
+    extra_space = 10 * cm;
     outer_cladding_fractional_radius_ = 0.03;
     inner_cladding_fractional_radius_ = 0.03;
     beta_emitter_wall_thickness_ = 1e-8 * cm;
     air_buffer_thickness_ = 20 * cm;
     outer_vessel_thickness_ = 1. * cm;
     ls_vessel_thickness_ = 1. * cm;
+
+    lattice_fixed_x = 0.;
+    lattice_fixed_y = 0.;
+    lattice_fixed_z = 0.;
+
+    numb_of_x_layers = 1;
 
 
     messenger_ = new OFOS_DetectorMessenger(this);
@@ -97,7 +107,7 @@ OFOS_DetectorConstruction::OFOS_DetectorConstruction() : G4VUserDetectorConstruc
     //define_materials();
 
 
-    /// LS properties are instantiated together with the detector 
+    /// LS properties are instantiated together with the detector
     /// so that they can be modified at any time
     my_ls_properties = new OFOS_LsMatProperties();
 
@@ -666,11 +676,16 @@ OFOS_DetectorConstruction::build_geom() {
     G4double instrumented_y_size = vert_ru_distance_ * (number_ru_y_ - 1) + 2.0 * vert_ru_radius;
     G4double instrumented_z_size = hori_ru_distance_ * (number_ru_z_ - 1) + 2.0 * hori_ru_radius;
 
+    //override instrumented_xyz_size if user impose it from macro
+
+    if(lattice_fixed_x > 0.) instrumented_x_size = lattice_fixed_x;
+    if(lattice_fixed_y > 0.) instrumented_y_size = lattice_fixed_y;
+    if(lattice_fixed_z > 0.) instrumented_z_size = lattice_fixed_z;
 
     /// ls volume - adding some extra space between the last fiber and the LS vessel
-    G4double ls_x_size = instrumented_x_size + 10 * cm;
-    G4double ls_y_size = instrumented_y_size + 10 * cm;
-    G4double ls_z_size = instrumented_z_size + 10 * cm;
+    G4double ls_x_size = instrumented_x_size + extra_space;
+    G4double ls_y_size = instrumented_y_size + extra_space;
+    G4double ls_z_size = instrumented_z_size + extra_space;
 
 
     /// ls vessel
@@ -688,9 +703,8 @@ OFOS_DetectorConstruction::build_geom() {
     G4double hori_fiber_length = ls_y_size + 2 * out_of_vessel_fiber_len - 2. * sipm_thickness;
     G4double hori_fiber_env_length = ls_y_size + 2 * out_of_vessel_fiber_len;
 
-
     /// outer vessel
-    G4double outer_vessel_x_size = ls_vessel_x_size + 2. * outer_vessel_thickness_ + 2. * air_buffer_thickness_;
+    G4double outer_vessel_x_size = numb_of_x_layers*ls_vessel_x_size + 2. * outer_vessel_thickness_ + 2. * air_buffer_thickness_;
     G4double outer_vessel_y_size = ls_vessel_y_size + 2. * outer_vessel_thickness_ + 2. * air_buffer_thickness_;
     G4double outer_vessel_z_size = ls_vessel_z_size + 2. * outer_vessel_thickness_ + 2. * air_buffer_thickness_;
 
@@ -740,9 +754,28 @@ OFOS_DetectorConstruction::build_geom() {
     // LS Vessel
     auto *ls_vessel_s = new G4Box("LsVessel", 0.5 * ls_vessel_x_size, 0.5 * ls_vessel_y_size, 0.5 * ls_vessel_z_size);
     auto *ls_vessel_l = new G4LogicalVolume(ls_vessel_s, black_acrylic, "LsVessel");
-    G4VPhysicalVolume *ls_vessel_p = new G4PVPlacement(nullptr, G4ThreeVector(), ls_vessel_l, "LsVessel", buffer_l,
-                                                       false, 0, fCheckOverlaps);
-
+    // place one or more vessels, depending on user choice
+    std::vector<G4double> x,y,z;
+    for(int iX = 0 ; iX < numb_of_x_layers; iX++){
+      x.push_back(iX*ls_vessel_x_size - 0.5*(numb_of_x_layers - 1)*ls_vessel_x_size);
+      y.push_back(0.);
+      z.push_back(0.);
+    }
+    G4VPVParameterisation* LsVessel_parametrization =
+                           new OFOS_LsVesselParametrization (x.size(),
+                                                             x,y,z,
+                                                             G4ThreeVector(ls_vessel_x_size,ls_vessel_y_size,ls_vessel_z_size )
+                                                             );
+    // G4VPhysicalVolume *ls_vessel_p = new G4PVPlacement(nullptr, G4ThreeVector(), ls_vessel_l, "LsVessel", buffer_l,
+                                                       // false, 0, fCheckOverlaps);
+    //
+    new G4PVParameterised("LsVessel",       // their name
+                          ls_vessel_l,   // their logical volume
+                          buffer_l,       // Mother logical volume
+                          kUndefined,          // Are placed along this axis
+                          x.size(),    // Number of chambers
+                          LsVessel_parametrization,    // The parametrisation
+                          false); // checking overlaps
 
     // LS
     auto *ls_s = new G4Box("LS", 0.5 * ls_x_size, 0.5 * ls_y_size, 0.5 * ls_z_size);
@@ -1128,6 +1161,7 @@ OFOS_DetectorConstruction::build_geom() {
 
     auto *fiber_inn_vis_att = new G4VisAttributes(G4Colour(1.0, 0.0, 0.0));
     auto *fiber_out_vis_att = new G4VisAttributes(G4Colour(0.0, 1.0, 0.0));
+    // fiber_out_vis_att->SetForceSolid(true);
     auto *fiber_cor_vis_att = new G4VisAttributes(G4Colour(0.0, 0.0, 1.0));
 
     vert_fiber_outer_cladding_l->SetVisAttributes(fiber_out_vis_att);

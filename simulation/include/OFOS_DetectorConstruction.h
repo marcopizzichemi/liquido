@@ -46,8 +46,8 @@ class OFOS_DetectorConstruction : public G4VUserDetectorConstruction
     G4Material* make_cocktail( double density, double loading_fraction, G4String& material );
 
     /// act on OFOS_LsMatProperties
-    void set_ls_dummy_absorption(double value); 
-    void set_ls_dummy_scattering(double value); 
+    void set_ls_dummy_absorption(double value);
+    void set_ls_dummy_scattering(double value);
     void set_ls_birks           ( double value );
     void set_ls_light_yield     ( double value );
     void set_ls_density         ( double value );
@@ -63,11 +63,17 @@ class OFOS_DetectorConstruction : public G4VUserDetectorConstruction
     void set_number_ru_x      ( G4int    value ) { number_ru_x_      = value; }
     void set_number_ru_y      ( G4int    value ) { number_ru_y_      = value; }
     void set_number_ru_z      ( G4int    value ) { number_ru_z_      = value; }
-    void set_vert_ru_dist     ( G4double value ) { vert_ru_distance_ = value; }  
-    void set_vert_ru_size     ( G4double value ) { vert_ru_size_     = value; }  
-    void set_hori_ru_dist     ( G4double value ) { hori_ru_distance_ = value; }  
-    void set_hori_ru_size     ( G4double value ) { hori_ru_size_     = value; }  
+    void set_vert_ru_dist     ( G4double value ) { vert_ru_distance_ = value; }
+    void set_vert_ru_size     ( G4double value ) { vert_ru_size_     = value; }
+    void set_hori_ru_dist     ( G4double value ) { hori_ru_distance_ = value; }
+    void set_hori_ru_size     ( G4double value ) { hori_ru_size_     = value; }
     void set_fiber_radius     ( G4double value ) { fiber_radius_     = value; }
+    void set_extra_space      ( G4double value ) { extra_space       = value; }
+
+    void set_lattice_fixed_x      ( G4double value ) { lattice_fixed_x       = value; }
+    void set_lattice_fixed_y      ( G4double value ) { lattice_fixed_y       = value; }
+    void set_lattice_fixed_z      ( G4double value ) { lattice_fixed_z       = value; }
+    void set_numb_of_x_layers     ( G4int    value ) { numb_of_x_layers      = value; }
 
     void set_outer_cladding_fractional_radius  (G4double value ) { outer_cladding_fractional_radius_ = value; }
     void set_inner_cladding_fractional_radius  (G4double value ) { inner_cladding_fractional_radius_ = value; }
@@ -84,7 +90,7 @@ class OFOS_DetectorConstruction : public G4VUserDetectorConstruction
     G4VPhysicalVolume* build_geom();
     void check_geom_params();
     void print_geom_params();
-  
+
     // data members
     G4LogicalVolume*   logic_vert_ru_sipmt_;    // pointer to the logical SiPmt for scoring
     G4LogicalVolume*   logic_hori_ru_sipmt_;    // pointer to the logical SiPmt for scoring
@@ -122,12 +128,19 @@ class OFOS_DetectorConstruction : public G4VUserDetectorConstruction
     G4double            hori_ru_distance_;  // csi
     G4double            hori_ru_size_;   // psi (fiber dist within a readout unit)
     G4double            fiber_radius_;
+    G4double            extra_space;
     G4double            outer_cladding_fractional_radius_;
     G4double            inner_cladding_fractional_radius_;
     G4double            beta_emitter_wall_thickness_;
     G4double            air_buffer_thickness_;
     G4double            outer_vessel_thickness_;
     G4double            ls_vessel_thickness_;
+
+    G4double            lattice_fixed_x;
+    G4double            lattice_fixed_y;
+    G4double            lattice_fixed_z;
+
+    G4int               numb_of_x_layers;
 
 
    /**************************
@@ -138,13 +151,13 @@ class OFOS_DetectorConstruction : public G4VUserDetectorConstruction
     OFOS_OpticalPhotonSD *vert_fiber_SD_;
     OFOS_OpticalPhotonSD *hori_sipmt_SD_;
     OFOS_OpticalPhotonSD *hori_fiber_SD_;
-    OFOS_OpticalPhotonSD *vessel_SD_; 
+    OFOS_OpticalPhotonSD *vessel_SD_;
 
  // OFOS_SiPmtSD  *vert_sipmt_SD_;
  // OFOS_FiberSD  *vert_fiber_SD_;
  // OFOS_SiPmtSD  *hori_sipmt_SD_;
  // OFOS_FiberSD  *hori_fiber_SD_;
- // OFOS_VesselSD *vessel_SD_; 
+ // OFOS_VesselSD *vessel_SD_;
 
  // OFOS_OpticalPhotonSD *optical_photon_sd_;
 
@@ -155,7 +168,7 @@ class OFOS_DetectorConstruction : public G4VUserDetectorConstruction
                                          // magnetic field messenger
 
 
-    G4bool  fCheckOverlaps; // option to activate checking of volumes overlaps 
+    G4bool  fCheckOverlaps; // option to activate checking of volumes overlaps
 
     void set_field();
 };

@@ -6,7 +6,7 @@
 #include "G4UImessenger.hh"
 
 //class OFOS_LsMatProperties;
-class OFOS_DetectorConstruction; 
+class OFOS_DetectorConstruction;
 class G4UIdirectory;
 class G4UIcmdWithAString;
 class G4UIcmdWithADoubleAndUnit;
@@ -20,9 +20,9 @@ class OFOS_DetectorMessenger: public G4UImessenger
   public:
     explicit OFOS_DetectorMessenger( OFOS_DetectorConstruction *det );
     virtual ~OFOS_DetectorMessenger();
-    
+
     virtual void SetNewValue(G4UIcommand*, G4String);
-    
+
   private:
     OFOS_DetectorConstruction *det_;
 
@@ -55,6 +55,13 @@ class OFOS_DetectorMessenger: public G4UImessenger
     G4UIcmdWithADouble        *outer_cladding_cmd_;
     G4UIcmdWithADouble        *inner_cladding_cmd_;
     G4UIcmdWithoutParameter   *build_geometry_cmd_;
+
+    G4UIcmdWithADoubleAndUnit *extra_space_cmd_     ;
+    G4UIcmdWithADoubleAndUnit *lattice_fixed_x_cmd_     ;
+    G4UIcmdWithADoubleAndUnit *lattice_fixed_y_cmd_     ;
+    G4UIcmdWithADoubleAndUnit *lattice_fixed_z_cmd_     ;
+
+    G4UIcmdWithAnInteger *num_layers_x_cmd_     ;
 
 };
 
